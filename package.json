@@ -1,0 +1,23 @@
+{
+  "name": "simplelauncher",
+  "version": "0.0.1-dev",
+  "description": "Launcher for SimpleClient",
+  "main": "src/main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SimpeClient/SimpleLauncher.git"
+  },
+  "author": "Fabi.exe",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/SimpeClient/SimpleLauncher/issues"
+  },
+  "homepage": "https://simpleclient.github.io",
+  "dependencies": {
+    "electron": "^25.1.0",
+    "path": "^0.12.7"
+  }
+}

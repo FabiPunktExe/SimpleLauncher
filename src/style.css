@@ -1,0 +1,113 @@
+* {
+    font-family: 'Calibri';
+}
+
+body {
+    margin: 0;
+    background: #ffffff;
+}
+
+#background-image {
+    position: fixed;
+    filter: blur(10px);
+    height: 100%;
+    width: 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+#launch {
+    position: fixed;
+    width: calc(44vh - 14vh);
+    height: 6vh;
+    left: calc(50vw - 44vh / 2);
+    top: calc(50vh - 3px - 6vh);
+    border: 2px solid #000000;
+    border-radius: 8px;
+    border-right: none;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    background-color: #22aa22;
+    color: #eeeeee;
+    font-size: 4vh;
+    font-weight: 600;
+    transition-duration: 0.2s;
+}
+
+#launch:hover {
+    background-color: #22cc22;
+}
+
+#account {
+    position: fixed;
+    width: calc(44vh - 6vh);
+    height: 6vh;
+    left: calc(50vw - 44vh / 2 + 6vh);
+    top: calc(50vh + 3px);
+    border: 2px solid #000000;
+    border-radius: 8px;
+    border-left: none;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    background-color: #555555;
+    color: #eeeeee;
+    font-size: 4vh;
+    font-weight: 600;
+    transition-duration: 0.2s;
+}
+
+#avatar {
+    position: fixed;
+    width: 6vh;
+    height: 5.6vh;
+    left: calc(50vw - 44vh / 2);
+    top: calc(50vh + 3px);
+    border: 2px solid #000000;
+    border-radius: 8px;
+    border-right: none;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    transition-duration: 0.2s;
+}
+
+#versions-button {
+    position: fixed;
+    width: 14vh;
+    height: 6vh;
+    left: calc(50vw + 44vh / 2 - 14vh);
+    top: calc(50vh - 3px - 6vh);
+    border: 2px solid #000000;
+    border-radius: 8px;
+    border-left: none;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    background-color: #229922;
+    color: #eeeeee;
+    font-size: 4vh;
+    font-weight: 600;
+    transition-duration: 0.2s;
+}
+
+#versions-button:hover {
+    background-color: #22aa22;
+}
+
+#versions {
+    visibility: hidden;
+    position: fixed;
+    width: 14vh;
+    height: 60vh;
+    left: calc(50vw + 44vh / 2 - 14vh);
+    top: calc(50vh - 3px);
+    border: 2px solid #000000;
+    border-radius: 8px;
+    border-left: none;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    background-color: #222222;
+    color: #eeeeee;
+    font-size: 4vh;
+    font-weight: 600;
+    transition-duration: 0.2s;
+}
