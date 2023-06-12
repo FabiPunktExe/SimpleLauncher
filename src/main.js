@@ -1,26 +1,12 @@
-const { app, BrowserWindow } = require('electron')
-const { join } = require('path')
+const { platform } = require('os')
+const { app } = require('electron')
+const { openWindow } = require('./gui/gui');
+const { getJavaVersion } = require('./java');
+const { exit } = require('process');
 
-const createWindow = () => {
-    const win = new BrowserWindow({
-        webPreferences: {
-            nodeIntegration: true,
-            javascript: true
-        }
-    })
-    win.setIcon(join(__dirname, 'logo.png'))
-    win.setMenuBarVisibility(false)
-    win.setTitle('SimpleClient')
-    win.loadFile(join(__dirname, 'index.html'))
-    win.maximize()
+if (platform() == 'win32' || platform() == 'linux') {
+    app.whenReady().then(openWindow)
+} else {
+    console.log('Your OS is not supported')
+    exit(1)
 }
-
-app.whenReady().then(() => {
-    createWindow()
-    app.on('window-all-closed', () => {
-        if (process.platform !== 'darwin') app.quit()
-    })
-    app.on('activate', () => {
-        if (BrowserWindow.getAllWindows().length === 0) createWindow()
-      })
-})
