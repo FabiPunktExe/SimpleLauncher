@@ -3,6 +3,14 @@ const { app } = require('electron')
 const { openWindow } = require('./gui/gui');
 const { getJavaVersion } = require('./java');
 const { exit } = require('process');
+const { autoUpdater } = require('electron-updater');
+const electronIsDev = require('electron-is-dev');
+
+if (electronIsDev) {
+    autoUpdater.allowPrerelease = true;
+    autoUpdater.on('update-available', console.log)
+    
+}
 
 if (platform() == 'win32' || platform() == 'linux') {
     app.whenReady().then(openWindow)
