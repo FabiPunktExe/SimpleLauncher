@@ -1,8 +1,9 @@
 const { platform } = require("os")
-const { runSync, runAsync, getDirectory } = require("./util")
-const { spawn } = require("child_process")
+const { runSync, getDirectory } = require("./util")
 const { join } = require("path")
-const AdmZip = require("adm-zip")
+const { mkdirSync, existsSync, rmSync, rm, writeFile } = require("fs")
+const { Readable } = require("stream")
+const { decompress } = require("lzma")
 
 const getJavaVersion = () => {
     const output = runSync('java', '-version').output
@@ -10,78 +11,90 @@ const getJavaVersion = () => {
     else return undefined
 }
 
-const downloadJava = (statusCallback) => {
-    if (platform() == 'win32') {
-        statusCallback('downloading_java')
-        runAsync(
-            'curl',
-            'https://aka.ms/download-jdk/microsoft-jdk-17.0.7-windows-x64.zip',
-            '-o',
-            join(getDirectory(), 'java.zip')
-        ).on('exit', code => {
-            if (code == 0) {
-                statusCallback('unpacking_java')
-                const zip = new AdmZip(join(getDirectory(), 'java.zip'))
-                if (zip.getEntryCount() == 1) {
-                    zip.getEntries().forEach(file => {
-                        zip.extractEntryTo(file.name, join(getDirectory(), 'java'))
-                        statusCallback('done')
-                    })
-                } else statusCallback('error')
-            } else statusCallback('error')
+const log = (...data) => console.log('[Java Download] ' + data)
 
-        })
-    } else if (os.platform() == 'linux') {
-        statusCallback('downloading_java')
-        runAsync(
-            'curl',
-            'https://aka.ms/download-jdk/microsoft-jdk-17.0.7-linux-x64.tar.gz',
-            '-o',
-            join(getDirectory(), 'java.tar.gz')
-        ).on('exit', code => {
-            if (code == 0) {
-                statusCallback('unpacking_java')
-                runAsync(
-                    'gzip',
-                    '-d',
-                    join(getDirectory(), 'java.tar.gz')
-                ).on('exit', code => {
-                    const output = runSync(
-                        'tar',
-                        '-t',
-                        '-f',
-                        join(getDirectory(), 'java.tar')
-                    ).output.toString()
-                    if (code == 0 && output.split('\n').length == 1) {
-                        runAsync(
-                            'tar',
-                            '-x',
-                            '-f',
-                            join(getDirectory(), 'java.tar')
-                        ).on('exit', code => {
-                            if (code == 0) {
-                                runAsync(
-                                    'mv',
-                                    join(getDirectory(), output),
-                                    join(getDirectory(), 'java')
-                                ).on('exit', code => {
-                                    if (code == 0) statusCallback('done')
-                                    else statusCallback('error')
-                                })
-                            } else statusCallback('error')
-                        })
-                    } else statusCallback('error')
-                })
-                const zip = new AdmZip(join(getDirectory(), 'java.zip'))
-                if (zip.getEntryCount() == 1) {
-                    zip.getEntries().forEach(file => {
-                        zip.extractEntryTo(file.name, join(getDirectory(), 'java'))
-                        statusCallback('done')
+function getJavaDownloadsUrl(version, callback) {
+    fetch('https://launchermeta.mojang.com/v1/products/java-runtime/2ec0cc96c44e5a76b9c8b7c39df7210883d12871/all.json', {timeout: 5000}).catch(error => {
+        log('Couldn\'t fetch Java download URL. Trying again in 5 seconds...')
+        getJavaDownloadsUrl(version, callback)
+    }).then(response => {
+        if (response && response.ok) {
+            response.json().then(json => {
+                if (platform() == 'win32') callback(json['windows-x64'][version][0].manifest.url)
+                if (platform() == 'linux') callback(json['linux'][version][0].manifest.url)
+            })
+        }
+    })
+}
+
+function getJavaDownloads(url, callback) {
+    fetch(url, {timeout: 5000}).catch(error => {
+        log('Couldn\'t fetch Java files. Trying again in 5 seconds...')
+        getJavaDownloads(url, callback)
+    }).then(response => {
+        if (response && response.ok) response.json().then(json => callback(json.files))
+        else callback(undefined)
+    })
+}
+
+function downloadNext(dir, downloads, files, filecount, callback) {
+    const file = files[0]
+    const data = downloads[file]
+    if (data.type == 'directory') {
+        mkdirSync(join(dir, file), {recursive: true})
+        files.shift()
+        log('Successfully created directory ' + file + ' (' + files.length + '/' + filecount + ' remaining)')
+        if (files.length == 0) callback()
+        else downloadNext(dir, downloads, files, filecount, callback)
+    } else if ('downloads' in data && 'raw' in data.downloads) {
+        log('Downloading ' + file + '...')
+        fetch(data.downloads.raw.url, {timeout: 5000}).catch(error => {
+            log('Couldn\'t download ' + file + '; Trying again in 5 seconds... (' + files.length + '/' + filecount + ' remaining)')
+            setTimeout(() => downloadNext(dir, downloads, files, filecount, callback), 5000)
+        }).then(response => {
+            if (response && response.ok) {
+                response.text().then(text => {
+                    writeFile(join(dir, file), text, () => {
+                        files.shift()
+                        log('Successfully downloaded ' + file + ' (' + files.length + '/' + filecount + ' remaining)')
+                        if (files.length == 0) callback()
+                        else downloadNext(dir, downloads, files, filecount, callback)
                     })
-                } else statusCallback('error')
-            } else statusCallback('error')
+                })
+            }
         })
+    } else {
+        files.shift()
+        log('Cannot downloaded ' + file + ' (' + files.length + '/' + filecount + ' remaining)')
+        if (files.length == 0) callback()
+        else downloadNext(dir, downloads, files, filecount, callback)
     }
+}
+
+const downloadJava = (statusCallback, version = 'java-runtime-gamma') => {
+    statusCallback('downloading_java')
+    const dir = join(getDirectory(), 'java', version)
+    if (existsSync(dir)) {
+        try {
+            rmSync(dir, {recursive: true, force: true})
+        } catch (e) {
+            statusCallback('error')
+            return
+        }
+    }
+    if (!existsSync(join(getDirectory(), 'java'))) mkdirSync(join(getDirectory(), 'java'))
+    mkdirSync(dir, {recursive: true})
+    getJavaDownloadsUrl(version, url => {
+        if (url) {
+            getJavaDownloads(url, downloads => {
+                if (downloads) {
+                    const files = Object.keys(downloads)
+                    const filecount = files.length
+                    downloadNext(dir, downloads, files, filecount, () => statusCallback('done'))
+                } else statusCallback('error')
+            })
+        } else statusCallback('error')
+    })
 }
 
 module.exports = {getJavaVersion, downloadJava}

@@ -1,17 +1,25 @@
 const { spawnSync, spawn } = require("child_process")
-const { existsSync, mkdirSync } = require("fs")
+const { existsSync, mkdirSync, readdirSync, statfsSync, statSync } = require("fs")
 const { userInfo, platform } = require("os")
 const { join } = require('path')
 
 const getDirectory = () => {
-    const directory = join(userInfo().homedir, '.simpleclient')
+    const directory = join(userInfo().homedir, '.simplelauncher')
     if (!existsSync(directory)) mkdirSync(directory)
     return directory
 }
 
 function getOptions() {
-    if (platform() == 'win32') return {env: {PATH: process.env.PATH + getDirectory() + '\\java\\bin;'}}
-    else if (os.platform() == 'linux') return {env: {PATH: process.env.PATH + ':' + getDirectory() + '/java/bin'}}
+    var path = process.env.PATH
+    if (existsSync(join(getDirectory(), 'java'))) {
+        readdirSync(join(getDirectory(), 'java')).forEach(file => {
+            if (statSync(join(getDirectory(), 'java', file)).isDirectory()) {
+                if (platform() == 'win32') path += getDirectory() + '\\java\\' + file + '\\bin;'
+                if (platform() == 'linux') path += getDirectory() + ':/java/' + file + '/bin'
+            }
+        })
+    }
+    return {env: {PATH: path}}
 }
 
 const runSync = (cmd, ...args) => spawnSync(cmd, args, getOptions())

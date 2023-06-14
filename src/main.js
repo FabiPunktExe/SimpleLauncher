@@ -13,10 +13,6 @@ if (!electronIsDev) {
     autoUpdater.autoInstallOnAppQuit = true;
 }
 
-console.log(getDirectory())
-console.log(getJavaVersion())
-downloadJava(console.log)
-
 if (platform() == 'win32' || platform() == 'linux') {
     app.whenReady().then(openWindow)
 } else {

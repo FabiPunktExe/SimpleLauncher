@@ -1,6 +1,6 @@
 {
   "name": "simplelauncher",
-  "version": "0.0.3-dev",
+  "version": "0.0.4-dev",
   "description": "Launcher for SimpleClient",
   "main": "src/main.js",
   "scripts": {
@@ -23,6 +23,7 @@
     "child_process": "^1.0.2",
     "electron-is-dev": "^2.0.0",
     "electron-updater": "^5.3.0",
+    "lzma": "^2.3.2",
     "os": "^0.1.2",
     "path": "^0.12.7"
   },
