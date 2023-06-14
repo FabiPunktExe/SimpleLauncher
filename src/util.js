@@ -1,6 +1,6 @@
 const { spawnSync, spawn } = require("child_process")
 const { existsSync, mkdirSync } = require("fs")
-const { userInfo } = require("os")
+const { userInfo, platform } = require("os")
 const { join } = require('path')
 
 const getDirectory = () => {
@@ -10,8 +10,8 @@ const getDirectory = () => {
 }
 
 function getOptions() {
-    if (platform() == 'win32') return process.env.PATH + getDirectory() + '\\java\\bin;'
-    else if (os.platform() == 'linux') return process.env.PATH + ':' + getDirectory() + '/java/bin'
+    if (platform() == 'win32') return {env: {PATH: process.env.PATH + getDirectory() + '\\java\\bin;'}}
+    else if (os.platform() == 'linux') return {env: {PATH: process.env.PATH + ':' + getDirectory() + '/java/bin'}}
 }
 
 const runSync = (cmd, ...args) => spawnSync(cmd, args, getOptions())
