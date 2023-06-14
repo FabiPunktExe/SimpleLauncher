@@ -5,7 +5,7 @@
   "main": "src/main.js",
   "scripts": {
     "start": "electron .",
-    "build": "electron-builder --windows --linux",
+    "build": "electron-builder --windows",
     "dist": "electron-builder build"
   },
   "repository": {
