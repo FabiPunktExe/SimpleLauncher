@@ -60,14 +60,10 @@ body {
 #avatar {
     position: fixed;
     width: 6vh;
-    height: 5.6vh;
+    height: 6vh;
     left: calc(50vw - 44vh / 2);
     top: calc(50vh + 3px);
-    border: 2px solid #000000;
-    border-radius: 8px;
-    border-right: none;
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
+    outline: 2px solid #000000;
     transition-duration: 0.2s;
 }
 
