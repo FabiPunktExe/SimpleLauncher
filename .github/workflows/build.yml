@@ -17,7 +17,7 @@ jobs:
         with:
           node-version: 18
       - name: Install dependencies
-        run: npm ci
+        run: npm i
       - name: Build
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
