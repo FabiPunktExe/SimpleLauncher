@@ -6,10 +6,10 @@ const { exit } = require('process');
 const { autoUpdater } = require('electron-updater');
 const electronIsDev = require('electron-is-dev');
 
-if (electronIsDev) {
+if (!electronIsDev) {
     autoUpdater.allowPrerelease = true;
-    autoUpdater.on('update-available', console.log)
-    
+    autoUpdater.autoDownload = true;
+    autoUpdater.autoInstallOnAppQuit = true;
 }
 
 if (platform() == 'win32' || platform() == 'linux') {
