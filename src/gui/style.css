@@ -17,6 +17,32 @@ body {
     background-size: cover;
 }
 
+#logo {
+    position: fixed;
+    width: auto;
+    height: 14vh;
+    top: 20vh;
+    left: 50%;
+    transform: translateX(-50%);
+    transition-duration: 0.2s;
+}
+
+#logo img {
+    position: relative;
+    width: auto;
+    height: 100%;
+}
+
+#logo p {
+    position: relative;
+    display: inline;
+    font-size: 14vh;
+    top: -15%;
+    color: #222222;
+    font-weight: 600;
+    user-select: none;
+}
+
 #launch {
     position: fixed;
     width: calc(44vh - 14vh);
