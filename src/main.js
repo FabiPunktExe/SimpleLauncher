@@ -18,6 +18,7 @@ if (platform() == 'win32' || platform() == 'linux') {
     app.whenReady().then(() => {
         const window = openWindow()
         window.on('ready-to-show', () => {
+            window.webContents.setZoomFactor(1)
             getSimpleClientVersions(versions => window.webContents.send('simpleclient_versions', versions))
         })
     })

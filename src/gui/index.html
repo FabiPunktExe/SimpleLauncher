@@ -23,16 +23,20 @@
         <script>
             electronAPI.on('simpleclient_versions', (event, data) => {
                 Array.from(versions.children).forEach(child => child.remove())
+                const changeVersion = version => {
+                        document.getElementById('launch').innerText = 'LAUNCH ' + version.minecraft_version
+                        document.getElementById('versions-button').value = version.id
+                        document.getElementById('versions-button').innerText = version.minecraft_version
+                }
                 data.forEach(version => {
                     const button = document.createElement('button')
                     button.id = version.id
                     button.className = 'version'
                     button.innerText = version.minecraft_version
+                    button.onclick = () => changeVersion(version)
                     versions.appendChild(button)
                 })
-                document.getElementById('launch').innerText = 'LAUNCH ' + data[data.length - 1].minecraft_version
-                document.getElementById('versions-button').value = data[data.length - 1].id
-                document.getElementById('versions-button').innerText = data[data.length - 1].minecraft_version
+                changeVersion(data[data.length - 1])
             })
             window.onclick = event => {
                 if (!event.target.matches('#versions-button') && versions.style.visibility == 'visible') {

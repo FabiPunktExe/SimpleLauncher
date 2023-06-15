@@ -24,10 +24,9 @@ body {
     left: calc(50vw - 44vh / 2);
     top: calc(50vh - 3px - 6vh);
     border: 2px solid #000000;
-    border-radius: 8px;
     border-right: none;
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
     background-color: #22aa22;
     color: #eeeeee;
     font-size: 4vh;
@@ -41,15 +40,14 @@ body {
 
 #account {
     position: fixed;
-    width: calc(44vh - 6vh);
+    width: calc(44vh - 6vh + 2px);
     height: 6vh;
-    left: calc(50vw - 44vh / 2 + 6vh);
+    left: calc(50vw - 44vh / 2 + 6vh - 2px);
     top: calc(50vh + 3px);
     border: 2px solid #000000;
-    border-radius: 8px;
     border-left: none;
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
     background-color: #555555;
     color: #eeeeee;
     font-size: 4vh;
@@ -59,11 +57,14 @@ body {
 
 #avatar {
     position: fixed;
-    width: 6vh;
-    height: 6vh;
+    width: calc(6vh - 4px);
+    height: calc(6vh - 4px);
     left: calc(50vw - 44vh / 2);
     top: calc(50vh + 3px);
-    outline: 2px solid #000000;
+    border: 2px solid #000000;
+    border-right: none;
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
     transition-duration: 0.2s;
 }
 
@@ -74,10 +75,9 @@ body {
     left: calc(50vw + 44vh / 2 - 14vh);
     top: calc(50vh - 3px - 6vh);
     border: 2px solid #000000;
-    border-radius: 8px;
     border-left: none;
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
     background-color: #229922;
     color: #eeeeee;
     font-size: 4vh;
@@ -97,10 +97,9 @@ body {
     left: calc(50vw + 44vh / 2 - 14vh);
     top: calc(50vh - 3px);
     border: 2px solid #000000;
-    border-radius: 8px;
     border-left: none;
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
     background-color: #222222;
     color: #eeeeee;
     font-size: 4vh;
