@@ -8,24 +8,35 @@
     </head>
     <body>
         <img id="background-image" src="background.jpg">
-        <button id="launch">LAUNCH 1.19.10</button>
-        <button id="account">kleinShinoo<p style="visibility: hidden;">Click to switch</p></button>
-        <img id="avatar" src="https://minotar.net/helm/kleinshinoo/64.png">
-        <div id="versions">
-            <button id="ver-1" class="version">1.19.10</button>
-            <button id="ver-2" class="version">1.19.11</button>
-            <button id="ver-3" class="version">1.19.12</button>
-        </div>
-        <script>const versionsDiv = document.getElementById('versions')</script>
-        <button id="versions-button" onclick="clickVersionsButton()">1.19.10</button>
+        <button id="launch" onclick="electronAPI.send('launch', document.getElementById('launch').value)" value=""></button>
+        <button id="account"><p style="visibility: hidden;">Click to switch</p></button>
+        <img id="avatar" src="https://minotar.net/helm/mhf_question/64.png">
+        <div id="versions"></div>
         <script>
+            const versions = document.getElementById('versions')
             function clickVersionsButton() {
-                if (versionsDiv.style.visibility == 'visible') versionsDiv.style.visibility = 'hidden'
-                else versionsDiv.style.visibility = 'visible'
+                if (versions.style.visibility == 'visible') versions.style.visibility = 'hidden'
+                else versions.style.visibility = 'visible'
             }
+        </script>
+        <button id="versions-button" onclick="clickVersionsButton()"></button>
+        <script>
+            electronAPI.on('simpleclient_versions', (event, data) => {
+                Array.from(versions.children).forEach(child => child.remove())
+                data.forEach(version => {
+                    const button = document.createElement('button')
+                    button.id = version.id
+                    button.className = 'version'
+                    button.innerText = version.minecraft_version
+                    versions.appendChild(button)
+                })
+                document.getElementById('launch').innerText = 'LAUNCH ' + data[data.length - 1].minecraft_version
+                document.getElementById('versions-button').value = data[data.length - 1].id
+                document.getElementById('versions-button').innerText = data[data.length - 1].minecraft_version
+            })
             window.onclick = event => {
-                if (!event.target.matches('#versions-button') && versionsDiv.style.visibility == 'visible') {
-                versionsDiv.style.visibility = 'hidden'
+                if (!event.target.matches('#versions-button') && versions.style.visibility == 'visible') {
+                versions.style.visibility = 'hidden'
                 }
             }
         </script>

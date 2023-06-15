@@ -1,10 +1,11 @@
 const { app, BrowserWindow } = require('electron')
-const { join } = require('path')
+const { join, resolve } = require('path')
 
 const openWindow = () => {
     const window = new BrowserWindow({
         webPreferences: {
             nodeIntegration: true,
+            preload: resolve(join('src', 'gui', 'preload.js')),
             javascript: true
         }
     })
