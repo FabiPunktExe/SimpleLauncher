@@ -66,9 +66,9 @@ body {
 
 #account {
     position: fixed;
-    width: calc(44vh - 6vh + 2px);
-    height: 6vh;
-    left: calc(50vw - 44vh / 2 + 6vh - 2px);
+    width: calc(44vh - 8vh + 2px);
+    height: 8vh;
+    left: calc(50vw - 44vh / 2 + 8vh - 2px);
     top: calc(50vh + 3px);
     border: 2px solid #000000;
     border-left: none;
@@ -81,10 +81,22 @@ body {
     transition-duration: 0.2s;
 }
 
+#account p {
+    position: relative;
+    width: calc(44vh - 8vh + 2px);
+    height: auto;
+    left: 0;
+    top: -3.25vh;
+    color: #eeeeee;
+    font-size: 2.5vh;
+    font-weight: 500;
+    transition-duration: 0.2s;
+}
+
 #avatar {
     position: fixed;
-    width: calc(6vh - 4px);
-    height: calc(6vh - 4px);
+    width: calc(8vh - 4px);
+    height: calc(8vh - 4px);
     left: calc(50vw - 44vh / 2);
     top: calc(50vh + 3px);
     border: 2px solid #000000;

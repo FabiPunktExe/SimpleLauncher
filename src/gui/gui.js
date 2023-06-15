@@ -7,11 +7,11 @@ const openWindow = () => {
             nodeIntegration: true,
             preload: resolve(join('src', 'gui', 'preload.js')),
             javascript: true
-        }
+        },
+        title: 'SimpleClient',
+        icon: join(__dirname, 'logo.png')
     })
-    window.setIcon(join(__dirname, 'logo.png'))
-    window.setMenuBarVisibility(false)
-    window.setTitle('SimpleClient')
+    window.removeMenu()
     window.loadFile(join(__dirname, 'index.html'))
     window.maximize()
     app.on('window-all-closed', () => app.quit())

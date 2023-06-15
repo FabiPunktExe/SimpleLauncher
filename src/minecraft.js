@@ -9,4 +9,7 @@ const getSimpleClientVersions = callback => {
 const downloadVersion = (id, statusCallback) => {
 }
 
-module.exports = {getSimpleClientVersions}
+const launch = id => {
+}
+
+module.exports = {launch, getSimpleClientVersions}
