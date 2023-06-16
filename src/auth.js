@@ -1,4 +1,7 @@
 const { BrowserWindow } = require("electron")
+const { readFileSync, existsSync, writeFileSync } = require("original-fs")
+const { getDirectory } = require("./util")
+const { join } = require("path")
 
 const azureClientId = '116c8d52-e832-4ff4-b056-8018cf33a67f'
 
@@ -25,5 +28,17 @@ const openAuthWindow = callback => {
         }
     })
     window.removeMenu()
-    window.loadURL(`https://login.microsoftonline.com/consumers/oauth2/v2.0/authorize?prompt=select_account&client_id=${azureClientId}&response_type=code&scope=XboxLive.signin%20offline_access&redirect_uri=https://login.microsoftonline.com/common/oauth2/nativeclient`)
+    window.loadURL(`https://login.microsoft.com/consumers/oauth2/v2.0/authorize?prompt=select_account&client_id=${azureClientId}&response_type=code&scope=XboxLive.signin%20offline_access&redirect_uri=https://login.microsoftonline.com/common/oauth2/nativeclient`)
 }
+
+const getAccounts = () => {
+    const file = join(getDirectory(), 'accounts.json')
+    if (!existsSync(file)) writeFileSync(file, '[]')
+    return JSON.parse(readFileSync(file))
+}
+
+const getAccount = (accounts, uuid) => {
+    return accounts.find(account => account.uuid == uuid)
+}
+
+module.exports = {openAuthWindow, getAccounts, getAccount}

@@ -64,6 +64,10 @@ body {
     background-color: #22cc22;
 }
 
+#launch:disabled {
+    background-color: #666666;
+}
+
 #account {
     position: fixed;
     width: calc(44vh - 8vh + 2px);
@@ -79,6 +83,10 @@ body {
     font-size: 4vh;
     font-weight: 600;
     transition-duration: 0.2s;
+}
+
+#account:hover {
+    background-color: #666666;
 }
 
 #account p {
@@ -128,7 +136,6 @@ body {
 }
 
 #versions {
-    visibility: hidden;
     position: fixed;
     width: 14vh;
     height: 60vh;
