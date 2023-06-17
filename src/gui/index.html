@@ -10,43 +10,65 @@
         <img id="background-image" src="background.jpg">
         <div id="logo"><img src="logo.png"><p>impleClient</p></div>
         <button id="launch" onclick="electronAPI.send('launch', document.getElementById('launch').value)" value="" disabled></button>
-        <button id="account"><p style="visibility: hidden;">Click to switch</p></button>
-        <img id="avatar" src="https://minotar.net/helm/mhf_question/64.png">
-        <div id="versions" style="visibility: hidden;"></div>
-        <div id="accounts" style="visibility: hidden;"></div>
+        <div id="accounts" style="visibility: hidden;">
+            <button class="account" onclick="electronAPI.send('login')" style="margin-bottom: 0.5vh;">Add Account</button>
+        </div>
         <script>
             const accounts = document.getElementById('accounts')
-            document.getElementById('account').onclick = () => {
+            function clickAccountsButton() {
                 if (accounts.children.length <= 1) electronAPI.send('login')
-                else {
-                    if (accounts.style.visibility == 'visible') accounts.style.visibility = 'hidden'
-                    else accounts.style.visibility = 'visible'
-                }
+                else if (accounts.style.visibility == 'visible') accounts.style.visibility = 'hidden'
+                else accounts.style.visibility = 'visible'
             }
-            electronAPI.on('accounts', (event, data) => {
-                if (data.length == 0) {
+        </script>
+        <button id="account" onclick="clickAccountsButton()"><p style="visibility: hidden;">Click to switch</p></button>
+        <img id="avatar" src="https://minotar.net/helm/mhf_question/64.png">
+        <div id="versions" style="visibility: hidden;"></div>
+        <script>
+            electronAPI.on('accounts', (event, accountList, index) => {
+                if (accountList.length == 0) {
                     document.getElementById('launch').disabled = true
                     document.getElementById('account').value = undefined
                     document.getElementById('account').innerText = 'Login with Microsoft'
                     document.getElementById('avatar').src = 'https://minotar.net/helm/mhf_question/64.png'
                 } else {
                     document.getElementById('launch').disabled = false
-                    Array.from(accounts.children).filter(child => child.id != undefined).forEach(child => child.remove())
+                    Array.from(accounts.children).filter(child => child.id).forEach(child => child.remove())
                     const changeAccount = account => {
-                            document.getElementById('account').value = account.uuid
-                            document.getElementById('account').innerText = account.name
-                            document.getElementById('avatar').src = `https://minotar.net/helm/${account.name}/64.png`
+                        console.log(account.name + ' ' + account.uuid)
+                        document.getElementById('launch').disabled = false
+                        document.getElementById('account').value = account.uuid
+                        document.getElementById('account').innerText = account.name
+                        document.getElementById('avatar').src = `https://minotar.net/helm/${account.uuid}/64.png`
                     }
-                    for (let i = 0; i < data.length; i++) {
-                        const element = array[i];
+                    for (var i = 0; i < accountList.length; i++) {
+                        const account = accountList[i]
                         const button = document.createElement('button')
-                        button.id = data[i].uuid
-                        button.className = 'account'
-                        button.innerText = data[i].name
+                        button.id = account.uuid
+                        button.classList = 'account'
+                        if (i == index) button.classList += ' selected-account'
+                        button.innerText = account.name
                         button.onclick = () => changeAccount(account)
-                        document.getElementById('accounts').appendChild(button)
+                        accounts.insertBefore(button, accounts.children[0])
                     }
-                    changeAccount(data[data.length - 1])
+                    changeAccount(accountList[index])
+                }
+            })
+            window.onclick = event => {
+                if (!event.target.matches('#versions-button') && versions.style.visibility == 'visible') {
+                    versions.style.visibility = 'hidden'
+                }
+            }
+            electronAPI.on('auth', (event, status) => {
+                if (status == 'starting') {
+                    document.getElementById('launch').disabled = true
+                    document.getElementById('account').disabled = true
+                } else if (status == 'error') {
+                    document.getElementById('launch').disabled = accounts.children.length <= 1
+                    document.getElementById('account').disabled = false
+                } else if (status == 'done') {
+                    document.getElementById('launch').disabled = false
+                    document.getElementById('account').disabled = false
                 }
             })
             const versions = document.getElementById('versions')
@@ -76,7 +98,9 @@
             })
             window.onclick = event => {
                 if (!event.target.matches('#versions-button') && versions.style.visibility == 'visible') {
-                versions.style.visibility = 'hidden'
+                    versions.style.visibility = 'hidden'
+                } else if (!event.target.matches('#account') && accounts.style.visibility == 'visible') {
+                    accounts.style.visibility = 'hidden'
                 }
             }
         </script>

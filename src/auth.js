@@ -7,12 +7,14 @@ var azureClientId = '116c8d52-e832-4ff4-b056-8018cf33a67f'
 azureClientId = '1ce6e35a-126f-48fd-97fb-54d143ac6d45'
 const redirectUrl = 'https://login.microsoftonline.com/common/oauth2/nativeclient'
 const scope = 'XboxLive.signin offline_access'
+var selectedAccount = 0
 
 var window
 var success
 
 const openAuthWindow = statusCallback => {
-    if (window) statusCallback('already_open')
+    if (window) return
+    statusCallback('starting')
     window = new BrowserWindow({
         title: 'Microsoft Login',
         backgroundColor: '#222222',
@@ -72,6 +74,7 @@ const openAuthWindow = statusCallback => {
                         expiration: time + minecraftData.expires_in * 1000
                     }]
                 })
+                statusCallback('done')
             } else window.close()
         }
     })
@@ -92,6 +95,29 @@ const getAccounts = () => {
 
 const getAccount = (accounts, uuid) => {
     return accounts.find(account => account.uuid == uuid)
+}
+
+const getAccountIndex = (accounts, uuid) => {
+    return accounts.findIndex(account => account.uuid == uuid)
+}
+
+const addAccount = account => {
+    const file = join(getDirectory(), 'accounts.json')
+    const accounts = existsSync(file) ? JSON.parse(readFileSync(file)) : []
+    const index = getAccountIndex(accounts, account.uuid)
+    if (index == -1) {
+        accounts.push(account)
+        writeFileSync(file, JSON.stringify(accounts))
+        selectedAccount = getAccountIndex(accounts, account.uuid)
+    } else selectedAccount = index
+}
+
+const removeAccount = uuid => {
+    const file = join(getDirectory(), 'accounts.json')
+    const accounts = existsSync(file) ? JSON.parse(readFileSync(file)) : []
+    accounts = accounts.filter(account => account.uuid != uuid)
+    writeFileSync(file, JSON.stringify(accounts))
+    selectedAccount = 0
 }
 
 const getMicrosoftData = async authorizationCode => {
@@ -197,11 +223,4 @@ const getMinecraftProfile = async minecraftAccessToken => {
     else return undefined
 }
 
-const addAccount = account => {
-    const file = join(getDirectory(), 'accounts.json')
-    const accounts = existsSync(file) ? JSON.parse(readFileSync(file)) : []
-    accounts.push(account)
-    writeFileSync(file, JSON.stringify(accounts))
-}
-
-module.exports = {openAuthWindow, getAccounts, getAccount, addAccount}
+module.exports = {openAuthWindow, getAccounts, getAccount, addAccount, selectedAccount}

@@ -11,7 +11,7 @@ const openWindow = () => {
         title: 'SimpleClient',
         icon: join(__dirname, 'logo.png')
     })
-    window.removeMenu()
+    window.setMenuBarVisibility(false)
     window.loadFile(join(__dirname, 'index.html'))
     window.maximize()
     app.on('window-all-closed', () => app.quit())

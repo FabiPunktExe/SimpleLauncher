@@ -58,6 +58,7 @@ body {
     font-size: 4vh;
     font-weight: 600;
     transition-duration: 0.2s;
+    cursor: pointer;
 }
 
 #launch:hover {
@@ -83,6 +84,7 @@ body {
     font-size: 4vh;
     font-weight: 600;
     transition-duration: 0.2s;
+    cursor: pointer;
 }
 
 #account:hover {
@@ -129,6 +131,7 @@ body {
     font-size: 4vh;
     font-weight: 600;
     transition-duration: 0.2s;
+    cursor: pointer;
 }
 
 #versions-button:hover {
@@ -150,4 +153,39 @@ body {
     font-size: 4vh;
     font-weight: 600;
     transition-duration: 0.2s;
+}
+
+#accounts {
+    position: fixed;
+    width: calc(44vh - 8vh);
+    height: auto;
+    left: calc(50vw - 44vh / 2 + 8vh - 2px);
+    top: calc(50vh + 3px + 8vh + 2px);
+    border: 2px solid #000000;
+    border-radius: 8px;
+    background-color: #222222;
+    color: #eeeeee;
+    font-size: 4vh;
+    font-weight: 600;
+    transition-duration: 0.2s;
+}
+
+.account {
+    position: relative;
+    display: block;
+    width: calc(100% - 1vh);
+    height: 5vh;
+    margin: 0.5vh 0.5vh 0 0.5vh;
+    border: none;
+    border-radius: 8px;
+    background-color: #222222;
+    color: #eeeeee;
+    font-size: 4vh;
+    font-weight: 600;
+    transition-duration: 0.2s;
+    cursor: pointer;
+}
+
+.account:hover {
+    background-color: #333333;
 }

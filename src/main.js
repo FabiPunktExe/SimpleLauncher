@@ -5,7 +5,7 @@ const { exit } = require('process');
 const { autoUpdater } = require('electron-updater');
 const electronIsDev = require('electron-is-dev');
 const { getSimpleClientVersions } = require('./minecraft');
-const { getAccounts, openAuthWindow } = require('./auth');
+const { getAccounts, openAuthWindow, selectedAccount } = require('./auth');
 
 if (!electronIsDev) {
     autoUpdater.allowPrerelease = true;
@@ -20,16 +20,17 @@ if (platform() == 'win32' || platform() == 'linux') {
         window.on('ready-to-show', () => {
             window.webContents.setZoomFactor(1)
             getSimpleClientVersions(versions => window.webContents.send('simpleclient_versions', versions))
-            window.webContents.send('accounts', accounts = getAccounts())
+            accounts = getAccounts()
+            window.webContents.send('accounts', accounts, selectedAccount)
         })
         ipcMain.on('login', event => {
             openAuthWindow(status => {
+                window.webContents.send('auth', status)
                 if (status == 'done') {
-                    window.webContents.send('auth', 'done')
-                    window.webContents.send('accounts', accounts = getAccounts())
+                    accounts = getAccounts()
+                    window.webContents.send('accounts', accounts, selectedAccount)
                 }
             })
-            window.webContents.send('auth', 'starting')
         })
     })
 } else {
