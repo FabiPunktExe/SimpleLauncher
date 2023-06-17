@@ -13,7 +13,7 @@ if (!electronIsDev) {
     autoUpdater.autoInstallOnAppQuit = true;
 }
 
-/*if (platform() == 'win32' || platform() == 'linux') {
+if (platform() == 'win32' || platform() == 'linux') {
     app.whenReady().then(() => {
         const window = openWindow()
         var accounts
@@ -23,18 +23,30 @@ if (!electronIsDev) {
             window.webContents.send('accounts', accounts = getAccounts())
         })
         ipcMain.on('login', event => {
-            openAuthWindow(() => {})
+            openAuthWindow(status => {
+                if (status == 'done') {
+                    window.webContents.send('auth', 'done')
+                    window.webContents.send('accounts', accounts = getAccounts())
+                }
+            })
+            window.webContents.send('auth', 'starting')
         })
     })
 } else {
     console.log('Your OS is not supported')
     exit(1)
-}*/
+}
 
-const { Authflow, Titles } = require('prismarine-auth')
-
-const userIdentifier = 'any unique identifier'
-const cacheDir = './' // You can leave this as undefined unless you want to specify a caching directory
-const flow = new Authflow(userIdentifier, cacheDir)
-// Get a Minecraft Java Edition auth token, then log it
-flow.getMinecraftJavaToken().then(console.log)
+/*app.whenReady(() => {
+    const auth = new Auth()
+    console.log(auth.createLink())
+    auth.launch("electron", {
+        resizable: false,
+        fullscreenable: false,
+        width: 520,
+        height: 700
+    }).then(async xboxManager => {
+        const token = await xboxManager.getMinecraft();
+        console.log("MSMC Object: " + token.getToken().mcToken)
+    })
+})*/

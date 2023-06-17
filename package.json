@@ -19,14 +19,13 @@
   },
   "homepage": "https://simpleclient.github.io",
   "dependencies": {
-    "adm-zip": "^0.5.10",
     "child_process": "^1.0.2",
     "electron-is-dev": "^2.0.0",
     "electron-updater": "^5.3.0",
-    "lzma": "^2.3.2",
+    "moment": "^2.29.4",
+    "msmc": "^4.1.0",
     "os": "^0.1.2",
-    "path": "^0.12.7",
-    "prismarine-auth": "^2.2.0"
+    "path": "^0.12.7"
   },
   "devDependencies": {
     "electron": "^25.1.0",
