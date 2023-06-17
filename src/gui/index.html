@@ -32,10 +32,8 @@
                     document.getElementById('account').innerText = 'Login with Microsoft'
                     document.getElementById('avatar').src = 'https://minotar.net/helm/mhf_question/64.png'
                 } else {
-                    document.getElementById('launch').disabled = false
                     Array.from(accounts.children).filter(child => child.id).forEach(child => child.remove())
                     const changeAccount = account => {
-                        console.log(account.name + ' ' + account.uuid)
                         document.getElementById('launch').disabled = false
                         document.getElementById('account').value = account.uuid
                         document.getElementById('account').innerText = account.name
@@ -49,7 +47,7 @@
                         if (i == index) button.classList += ' selected-account'
                         button.innerText = account.name
                         button.onclick = () => changeAccount(account)
-                        accounts.insertBefore(button, accounts.children[0])
+                        accounts.insertBefore(button, accounts.children[accounts.children.length - 1])
                     }
                     changeAccount(accountList[index])
                 }
@@ -63,12 +61,19 @@
                 if (status == 'starting') {
                     document.getElementById('launch').disabled = true
                     document.getElementById('account').disabled = true
+                    document.getElementById('account').innerText = 'Authenticating...'
+                } else if (status == 'cancelled') {
+                    document.getElementById('launch').disabled = accounts.children.length <= 1
+                    document.getElementById('account').disabled = false
+                    document.getElementById('account').innerText = 'Login with Microsoft'
                 } else if (status == 'error') {
                     document.getElementById('launch').disabled = accounts.children.length <= 1
                     document.getElementById('account').disabled = false
+                    document.getElementById('account').innerText = 'Login with Microsoft'
                 } else if (status == 'done') {
                     document.getElementById('launch').disabled = false
                     document.getElementById('account').disabled = false
+                    document.getElementById('account').innerText = ''
                 }
             })
             const versions = document.getElementById('versions')

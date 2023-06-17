@@ -9,6 +9,7 @@ body {
 
 #background-image {
     position: fixed;
+    display: inline;
     filter: blur(10px);
     height: 100%;
     width: 100%;
@@ -67,6 +68,7 @@ body {
 
 #launch:disabled {
     background-color: #666666;
+    cursor: default;
 }
 
 #account {
@@ -79,7 +81,7 @@ body {
     border-left: none;
     border-top-right-radius: 8px;
     border-bottom-right-radius: 8px;
-    background-color: #555555;
+    background-color: #3355ff;
     color: #eeeeee;
     font-size: 4vh;
     font-weight: 600;
@@ -88,7 +90,12 @@ body {
 }
 
 #account:hover {
+    background-color: #5577ff;
+}
+
+#account:disabled {
     background-color: #666666;
+    cursor: default;
 }
 
 #account p {
@@ -138,21 +145,49 @@ body {
     background-color: #22aa22;
 }
 
+#versions-button:disabled {
+    background-color: #666666;
+    cursor: default;
+}
+
 #versions {
     position: fixed;
-    width: 14vh;
-    height: 60vh;
+    width: calc(14vh - 4px);
+    height: auto;
+    padding-bottom: 0.5vh;
     left: calc(50vw + 44vh / 2 - 14vh);
-    top: calc(50vh - 3px);
+    top: calc(50vh - 2px);
     border: 2px solid #000000;
-    border-left: none;
-    border-top-right-radius: 8px;
-    border-bottom-right-radius: 8px;
+    border-radius: 8px;
     background-color: #222222;
     color: #eeeeee;
     font-size: 4vh;
     font-weight: 600;
     transition-duration: 0.2s;
+}
+
+.version {
+    position: relative;
+    display: block;
+    width: calc(100% - 1vh);
+    height: 5vh;
+    margin: 0.5vh 0.5vh 0 0.5vh;
+    border: none;
+    border-radius: 8px;
+    background-color: #222222;
+    color: #eeeeee;
+    font-size: 4vh;
+    font-weight: 600;
+    transition-duration: 0.2s;
+    cursor: pointer;
+}
+
+.version:hover {
+    background-color: #333333;
+}
+
+.version:disabled {
+    cursor: default;
 }
 
 #accounts {
@@ -188,4 +223,8 @@ body {
 
 .account:hover {
     background-color: #333333;
+}
+
+.account:disabled {
+    cursor: default;
 }

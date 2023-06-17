@@ -5,7 +5,7 @@ const { exit } = require('process');
 const { autoUpdater } = require('electron-updater');
 const electronIsDev = require('electron-is-dev');
 const { getSimpleClientVersions } = require('./minecraft');
-const { getAccounts, openAuthWindow, selectedAccount } = require('./auth');
+const { getAccounts, openAuthWindow } = require('./auth');
 
 if (!electronIsDev) {
     autoUpdater.allowPrerelease = true;
@@ -21,10 +21,10 @@ if (platform() == 'win32' || platform() == 'linux') {
             window.webContents.setZoomFactor(1)
             getSimpleClientVersions(versions => window.webContents.send('simpleclient_versions', versions))
             accounts = getAccounts()
-            window.webContents.send('accounts', accounts, selectedAccount)
+            window.webContents.send('accounts', accounts, 0)
         })
         ipcMain.on('login', event => {
-            openAuthWindow(status => {
+            openAuthWindow((status, selectedAccount) => {
                 window.webContents.send('auth', status)
                 if (status == 'done') {
                     accounts = getAccounts()
@@ -37,17 +37,3 @@ if (platform() == 'win32' || platform() == 'linux') {
     console.log('Your OS is not supported')
     exit(1)
 }
-
-/*app.whenReady(() => {
-    const auth = new Auth()
-    console.log(auth.createLink())
-    auth.launch("electron", {
-        resizable: false,
-        fullscreenable: false,
-        width: 520,
-        height: 700
-    }).then(async xboxManager => {
-        const token = await xboxManager.getMinecraft();
-        console.log("MSMC Object: " + token.getToken().mcToken)
-    })
-})*/

@@ -24,7 +24,7 @@ const openAuthWindow = statusCallback => {
         icon: join(__dirname, 'gui', 'logo.png')
     })
     window.on('closed', () => window = undefined)
-    window.on('close', () => {if (!success) statusCallback('canceled')})
+    window.on('close', () => {if (!success) statusCallback('cancelled')})
     window.webContents.on('did-navigate', async (event, url) => {
         if (url.startsWith(`${redirectUrl}?`)) {
             if (url.includes('code=')) {
@@ -74,7 +74,7 @@ const openAuthWindow = statusCallback => {
                         expiration: time + minecraftData.expires_in * 1000
                     }]
                 })
-                statusCallback('done')
+                statusCallback('done', selectedAccount)
             } else window.close()
         }
     })
@@ -108,7 +108,7 @@ const addAccount = account => {
     if (index == -1) {
         accounts.push(account)
         writeFileSync(file, JSON.stringify(accounts))
-        selectedAccount = getAccountIndex(accounts, account.uuid)
+        selectedAccount = accounts.length - 1
     } else selectedAccount = index
 }
 
