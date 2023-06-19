@@ -1,15 +1,15 @@
 const { spawnSync, spawn } = require("child_process")
-const { existsSync, mkdirSync, readdirSync, statfsSync, statSync } = require("fs")
-const { userInfo, platform } = require("os")
+const { existsSync, mkdirSync, readdirSync, statSync } = require("fs")
+const { platform, homedir } = require("os")
 const { join } = require('path')
 
 const getDirectory = () => {
-    const directory = join(userInfo().homedir, '.simplelauncher')
+    const directory = join(homedir(), '.simplelauncher')
     if (!existsSync(directory)) mkdirSync(directory)
     return directory
 }
 
-function getOptions() {
+function getPath() {
     var path = process.env.PATH
     if (existsSync(join(getDirectory(), 'java'))) {
         readdirSync(join(getDirectory(), 'java')).forEach(file => {
@@ -19,10 +19,14 @@ function getOptions() {
             }
         })
     }
-    return {env: {PATH: path}}
+    return path
+}
+
+function getOptions() {
+    return {env: {PATH: getPath()}}
 }
 
 const runSync = (cmd, ...args) => spawnSync(cmd, args, getOptions())
 const runAsync = (cmd, ...args) => spawn(cmd, args, getOptions())
 
-module.exports = {getDirectory, runSync, runAsync}
+module.exports = {getDirectory, getPath, runSync, runAsync}

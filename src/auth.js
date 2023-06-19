@@ -8,9 +8,11 @@ azureClientId = '1ce6e35a-126f-48fd-97fb-54d143ac6d45'
 const redirectUrl = 'https://login.microsoftonline.com/common/oauth2/nativeclient'
 const scope = 'XboxLive.signin offline_access'
 var selectedAccount = 0
-
+var accounts
 var window
 var success
+
+const loadAccounts = () => accounts = getAccounts()
 
 const openAuthWindow = statusCallback => {
     if (window) return
@@ -67,7 +69,7 @@ const openAuthWindow = statusCallback => {
                     }],
                     xsts_access_tokens: [{
                         token: xstsAccessToken,
-                        expiration: new Date(xstsAccessToken.NotAfter).getTime()
+                        expiration: new Date(xstsData.NotAfter).getTime()
                     }],
                     minecraft_access_tokens: [{
                         token: minecraftAccessToken,
@@ -103,7 +105,7 @@ const getAccountIndex = (accounts, uuid) => {
 
 const addAccount = account => {
     const file = join(getDirectory(), 'accounts.json')
-    const accounts = existsSync(file) ? JSON.parse(readFileSync(file)) : []
+    accounts = existsSync(file) ? JSON.parse(readFileSync(file)) : []
     const index = getAccountIndex(accounts, account.uuid)
     if (index == -1) {
         accounts.push(account)
@@ -114,7 +116,7 @@ const addAccount = account => {
 
 const removeAccount = uuid => {
     const file = join(getDirectory(), 'accounts.json')
-    const accounts = existsSync(file) ? JSON.parse(readFileSync(file)) : []
+    accounts = existsSync(file) ? JSON.parse(readFileSync(file)) : []
     accounts = accounts.filter(account => account.uuid != uuid)
     writeFileSync(file, JSON.stringify(accounts))
     selectedAccount = 0
@@ -136,7 +138,7 @@ const getMicrosoftData = async authorizationCode => {
     else return undefined
 }
 
-const getMicrosoftAccessToken = async refreshToken => {
+const getMicrosoftDataByRefreshToken = async refreshToken => {
     const response = await fetch('https://login.microsoftonline.com/consumers/oauth2/v2.0/token?', {
         method: 'POST',
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
@@ -148,10 +150,8 @@ const getMicrosoftAccessToken = async refreshToken => {
             grant_type: 'authorization_code'
         })
     })
-    if (response && response.ok) {
-        const json = await response.json()
-        return json.access_token
-    } else return undefined
+    if (response && response.ok) return await response.json()
+    else return undefined
 }
 
 const getXboxLiveData = async microsoftAccessToken => {
@@ -223,4 +223,56 @@ const getMinecraftProfile = async minecraftAccessToken => {
     else return undefined
 }
 
-module.exports = {openAuthWindow, getAccounts, getAccount, addAccount, selectedAccount}
+const refreshTokens = async account => {
+    var time = new Date().getTime()
+    if (account.minecraft_access_tokens.find(token => token.expiration > time)) return true
+    var xstsAccessToken = account.xsts_access_tokens.find(token => token.expiration > time)
+    var userhash = account.xbox_access_tokens.find(token => token.expiration > time).userhash
+    if (!xstsAccessToken) {
+        var xboxLiveAccessToken = account.xbox_access_tokens.find(token => token.expiration > time).token
+        if (!xboxLiveAccessToken) {
+            var microsoftAccessToken = account.microsoft_access_tokens.find(token => token.expiration > time)
+            if (!microsoftAccessToken) {
+                var microsoftData = await getMicrosoftDataByRefreshToken(account.microsoft_refresh_token)
+                if (!microsoftData) return false
+                microsoftAccessToken = microsoftData.access_token
+                account.microsoft_access_tokens = [{
+                    token: microsoftAccessToken,
+                    expiration: time + microsoftData.expires_in * 1000
+                }]
+            }
+            var xboxLiveData = await getXboxLiveData(microsoftAccessToken)
+            if (!xboxLiveData) return false
+            xboxLiveAccessToken = xboxLiveData.Token
+            if (xboxLiveData.DisplayClaims.xui.length == 0) return false
+            userhash = xboxLiveData.DisplayClaims.xui[0].uhs
+            account.xbox_access_tokens = [{
+                token: xstsAccessToken,
+                expiration: new Date(xboxLiveData.NotAfter).getTime(),
+                userhash: userhash
+            }]
+        }
+        var xstsData = await getXSTSData(xboxLiveAccessToken)
+        if (!xstsData) return false
+        xstsAccessToken = xstsData.Token
+        account.xsts_access_tokens = [{
+            token: xstsAccessToken,
+            expiration: new Date(xstsData.NotAfter).getTime()
+        }]
+    }
+    var minecraftData = await getMinecraftData(userhash, xstsAccessToken)
+    if (!minecraftData) return false
+    var minecraftAccessToken = minecraftData.access_token
+    account.minecraft_access_tokens = [{
+        token: minecraftAccessToken,
+        expiration: time + minecraftData.expires_in * 1000
+    }]
+    var minecraftProfile = await getMinecraftProfile(minecraftAccessToken)
+    if (!minecraftProfile) return false
+    removeAccount(account.uuid)
+    account.uuid = minecraftProfile.id
+    addAccount(account)
+    return true
+}
+
+module.exports = {openAuthWindow, getAccounts, getAccount, addAccount, selectedAccount, refreshTokens, accounts, loadAccounts}

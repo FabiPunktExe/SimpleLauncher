@@ -9,7 +9,7 @@
     <body>
         <img id="background-image" src="background.jpg">
         <div id="logo"><img src="logo.png"><p>impleClient</p></div>
-        <button id="launch" onclick="electronAPI.send('launch', document.getElementById('launch').value)" value="" disabled></button>
+        <button id="launch" onclick="electronAPI.send('launch', {versionId: document.getElementById('launch').value, uuid: document.getElementById('account').value})" value="" disabled></button>
         <div id="accounts" style="visibility: hidden;">
             <button class="account" onclick="electronAPI.send('login')" style="margin-bottom: 0.5vh;">Add Account</button>
         </div>
@@ -84,14 +84,14 @@
         </script>
         <button id="versions-button" onclick="clickVersionsButton()"></button>
         <script>
-            electronAPI.on('simpleclient_versions', (event, data) => {
+            electronAPI.on('simpleclient_versions', (event, versionList) => {
                 Array.from(versions.children).forEach(child => child.remove())
                 const changeVersion = version => {
                         document.getElementById('launch').innerText = 'LAUNCH ' + version.minecraft_version
-                        document.getElementById('versions-button').value = version.id
+                        document.getElementById('launch').value = version.id
                         document.getElementById('versions-button').innerText = version.minecraft_version
                 }
-                data.forEach(version => {
+                versionList.forEach(version => {
                     const button = document.createElement('button')
                     button.id = version.id
                     button.className = 'version'
@@ -99,7 +99,7 @@
                     button.onclick = () => changeVersion(version)
                     versions.appendChild(button)
                 })
-                changeVersion(data[data.length - 1])
+                changeVersion(versionList[versionList.length - 1])
             })
             window.onclick = event => {
                 if (!event.target.matches('#versions-button') && versions.style.visibility == 'visible') {
