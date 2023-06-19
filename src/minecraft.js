@@ -1,11 +1,11 @@
 const { existsSync } = require("original-fs")
 const { getDirectory, runSync, runAsync, getPath } = require("./util")
 const { join, dirname } = require("path")
-const { spawnSync, } = require("child_process")
-const { mkdirSync, readFileSync, statSync } = require("fs")
+const { spawnSync, spawn, } = require("child_process")
+const { mkdirSync, readFileSync, statSync, writeFileSync } = require("fs")
 const { homedir, platform } = require("os")
 const { downloadJava, getJavaVersion } = require("./java")
-const { arch, env } = require("process")
+const { arch, env, stdout } = require("process")
 const { refreshTokens } = require("./auth")
 
 const versionsManifestUrl = 'https://launchermeta.mojang.com/mc/game/version_manifest.json'
@@ -54,7 +54,7 @@ function checkRule(rule) {
 
 async function downloadLibraries(versionMeta) {
     const dir = join(getMinecraftDir(), 'libraries')
-    versionMeta.libraries.filter(library => !library.rules || library.rules.every(checkRule)).forEach(library => {
+    versionMeta.libraries/*.filter(library => !library.rules || library.rules.every(checkRule))*/.forEach(library => {
         if (!existsSync(join(dir, library.downloads.artifact.path))) {
             log(`Downloading library ${library.name}...`)
             const libraryDir = dirname(join(dir, library.downloads.artifact.path))
@@ -173,20 +173,21 @@ const launch = async (version, account, statusCallback) => {
     const meta = JSON.parse(readFileSync(join(versionDir, `${version.minecraft_version}.json`)))
     const fabricMeta = JSON.parse(readFileSync(join(fabricDir, `fabric-loader-${version.fabric_version}-${version.minecraft_version}.json`)))
     meta.mainClass = fabricMeta.mainClass
-    //meta.arguments.jvm = meta.arguments.jvm.concat(fabricMeta.arguments.jvm)
+    meta.arguments.jvm = meta.arguments.jvm.concat(fabricMeta.arguments.jvm)
     meta.arguments.game = meta.arguments.game.concat(fabricMeta.arguments.game)
     const path = getPath()
+    const nativesDirectory = join(getMinecraftDir(), 'natives', version.minecraft_version)
     const separator = platform() == 'win32' ? ';' : platform() == 'linux' ? ':' : undefined
     const libraryDir = join(getMinecraftDir(), 'libraries')
     const libraries = meta.libraries.map(library => {
         return join(libraryDir, library.downloads.artifact.path)
     }).concat(fabricMeta.libraries.map(library => {
-        return join(libraryDir, library.name.split(':')[0].replace('.', '/'), library.name.split(':')[1], library.name.split(':')[2], `${library.name.split(':')[1]}-${library.name.split(':')[2]}.jar`)
+        return join(libraryDir, library.name.split(':')[0].replace('.', '/').replace('.', '/'), library.name.split(':')[1], library.name.split(':')[2], `${library.name.split(':')[1]}-${library.name.split(':')[2]}.jar`)
     })).join(separator)
     const jar = join(fabricDir, `fabric-loader-${version.fabric_version}-${version.minecraft_version}.jar`)
     const classpath = libraries + separator + jar
     const values = {
-        natives_directory: path,
+        natives_directory: nativesDirectory,
         auth_player_name: account.name,
         version_name: meta.id,
         game_directory: getMinecraftDir(),
@@ -203,21 +204,18 @@ const launch = async (version, account, statusCallback) => {
         classpath: classpath
     }
     var jvmArguments = [
-        //'-Xmx4G',// `${memory}M`,
-        //'-Xms2G',// `${memory}M`,
+        `-Xmx${memory}M`,
         '-Dlog4j2.formatMsgNoLookups=true'
     ]
     jvmArguments = jvmArguments.concat(meta.arguments.jvm.filter(arg => !arg.rules || arg.rules.every(checkRule)).map(arg => arg.value || arg))
     var arguments = []
-    //arguments = arguments.concat(jvmArguments)
-    //arguments.push('--class-path')
-    //arguments.push(classpath)
-    //arguments.push(meta.mainClass)
-    arguments.push('--class-path C:\\Users\\Fabian\\AppData\\Roaming\\.minecraft\\libraries\\net\\fabricmc\\fabric-loader\\0.14.21\\fabric-loader-0.14.21.jar;C:\\Users\\Fabian\\AppData\\Roaming\\.minecraft\\versions\\fabric-loader-0.14.21-1.20\\fabric-loader-0.14.21-1.20.jar net.fabricmc.loader.impl.launch.knot.KnotClient')
-    //arguments = arguments.concat(meta.arguments.game.filter(arg => !arg.rules || arg.rules.every(checkRule)).map(arg => arg.value || arg))
-    //console.log('javaw ' + insertValues(arguments, values).join(' '))
-    console.log(runSync('java ' + arguments[0]/*, insertValues(arguments, values)*/).output)
-    //console.log(insertValues(arguments, values))
+    arguments = arguments.concat(jvmArguments)
+    arguments.push(meta.mainClass)
+    arguments = arguments.concat(meta.arguments.game.filter(arg => !arg.rules || arg.rules.every(checkRule)).map(arg => arg.value || arg))
+    spawn('java', insertValues(arguments, values), {
+        cwd: getMinecraftDir(),
+        env: {PATH: path}
+    }).stdout.pipe(stdout)
     statusCallback('done')
 }
 
