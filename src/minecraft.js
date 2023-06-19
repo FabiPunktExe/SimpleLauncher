@@ -68,7 +68,7 @@ async function downloadLibraries(versionMeta) {
 async function downloadAssets(versionMeta) {
     const assetsDir = join(getMinecraftDir(), 'assets')
     const indexesDir = join(assetsDir, 'indexes')
-    if (!existsSync(indexesDir)) mkdirSync(indexesDir)
+    if (!existsSync(indexesDir)) mkdirSync(indexesDir, {recursive: true})
     const indexFile = join(indexesDir, `${versionMeta.assetIndex.id}.json`)
     if (!existsSync(indexFile)) {
         log(`Downloading ${versionMeta.assetIndex.id}.json...`)
@@ -87,6 +87,19 @@ async function downloadAssets(versionMeta) {
             log(`Successfully downloaded asset ${name}...`)
         }
     }
+}
+
+async function downloadMods(version) {
+    const dir = join(getDirectory(), 'versions', version.id, 'mods')
+    if (!existsSync(dir)) mkdirSync(dir, {recursive: true})
+    version.mods.forEach(mod => {
+        const fileName = mod.split('/')[mod.split('/').length - 1]
+        if (!existsSync(join(dir, fileName))) {
+            log(`Downloading mod ${fileName}...`)
+            spawnSync('curl', ['-L', mod, '-o', join(dir, fileName)])
+            log(`Successfully downloaded mod ${fileName}...`)
+        }
+    })
 }
 
 async function downloadVersion(version, dir, statusCallback) {
@@ -147,6 +160,9 @@ async function downloadVersion(version, dir, statusCallback) {
     statusCallback('downloading_assets_starting')
     await downloadAssets(minecraftVersionMeta)
     statusCallback('downloading_assets_done')
+    statusCallback('downloading_mods_starting')
+    await downloadMods(version)
+    statusCallback('downloading_mods_done')
     statusCallback('download_done')
 }
 
@@ -205,7 +221,11 @@ const launch = async (version, account, statusCallback) => {
     }
     var jvmArguments = [
         `-Xmx${memory}M`,
-        '-Dlog4j2.formatMsgNoLookups=true'
+        '-Dlog4j2.formatMsgNoLookups=true',
+        '-Dfabric.addMods=' + version.mods.map(mod => {
+            const fileName = mod.split('/')[mod.split('/').length - 1]
+            return join(dir, 'mods', fileName)
+        }).join(separator)
     ]
     jvmArguments = jvmArguments.concat(meta.arguments.jvm.filter(arg => !arg.rules || arg.rules.every(checkRule)).map(arg => arg.value || arg))
     var arguments = []
