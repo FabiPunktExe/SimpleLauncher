@@ -4,9 +4,11 @@ const { join, resolve } = require('path')
 const openWindow = () => {
     const window = new BrowserWindow({
         webPreferences: {
+            preload: resolve(join(__dirname, 'preload.js')),
             nodeIntegration: true,
-            preload: resolve(join('src', 'gui', 'preload.js')),
-            javascript: true
+            javascript: true,
+            contextIsolation: true,
+            sandbox: false
         },
         title: 'SimpleClient',
         icon: join(__dirname, 'logo.png')

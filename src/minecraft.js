@@ -227,11 +227,22 @@ const launch = async (version, account, statusCallback) => {
             return join(dir, 'mods', fileName)
         }).join(separator)
     ]
-    jvmArguments = jvmArguments.concat(meta.arguments.jvm.filter(arg => !arg.rules || arg.rules.every(checkRule)).map(arg => arg.value || arg))
+    meta.arguments.jvm.filter(arg => !arg.rules || arg.rules.every(checkRule)).forEach(arg => {
+        if (arg.value) {
+            if (Array.isArray(arg.value)) for (value of arg.value) jvmArguments.push(value)
+            else jvmArguments.push(arg.value)
+        } else jvmArguments.push(arg)
+    })
+    console.log(jvmArguments)
     var arguments = []
     arguments = arguments.concat(jvmArguments)
     arguments.push(meta.mainClass)
-    arguments = arguments.concat(meta.arguments.game.filter(arg => !arg.rules || arg.rules.every(checkRule)).map(arg => arg.value || arg))
+    meta.arguments.game.filter(arg => !arg.rules || arg.rules.every(checkRule)).forEach(arg => {
+        if (arg.value) {
+            if (Array.isArray(arg.value)) for (value of arg.value) jvmArguments.push(value)
+            else arguments.push(arg.value)
+        } else arguments.push(arg)
+    })
     spawn('java', insertValues(arguments, values), {
         cwd: getMinecraftDir(),
         env: {PATH: path}

@@ -5,7 +5,7 @@ const { exit } = require('process');
 const { autoUpdater } = require('electron-updater');
 const electronIsDev = require('electron-is-dev');
 const { getSimpleClientVersions, launch } = require('./minecraft');
-const { loadAccounts, openAuthWindow, getAccounts } = require('./auth');
+const { openAuthWindow, getAccounts } = require('./auth');
 
 if (!electronIsDev) {
     autoUpdater.allowPrerelease = true;
@@ -14,6 +14,7 @@ if (!electronIsDev) {
 }
 
 if (platform() == 'win32' || platform() == 'linux') {
+    app.disableHardwareAcceleration()
     app.whenReady().then(() => {
         const window = openWindow()
         window.on('ready-to-show', () => {

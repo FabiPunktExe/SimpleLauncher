@@ -1,6 +1,6 @@
 {
   "name": "simplelauncher",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Launcher for SimpleClient",
   "main": "src/main.js",
   "scripts": {

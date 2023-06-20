@@ -12,8 +12,6 @@ var accounts
 var window
 var success
 
-const loadAccounts = () => accounts = getAccounts()
-
 const openAuthWindow = statusCallback => {
     if (window) return
     statusCallback('starting')
@@ -275,4 +273,4 @@ const refreshTokens = async account => {
     return true
 }
 
-module.exports = {openAuthWindow, getAccounts, getAccount, addAccount, selectedAccount, refreshTokens, accounts, loadAccounts}
+module.exports = {openAuthWindow, getAccounts, getAccount, addAccount, selectedAccount, refreshTokens, accounts}
