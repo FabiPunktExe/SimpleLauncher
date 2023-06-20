@@ -22,7 +22,7 @@
             }
         </script>
         <button id="account" onclick="clickAccountsButton()"><p style="visibility: hidden;">Click to switch</p></button>
-        <img id="avatar" src="https://minotar.net/helm/mhf_question/64.png">
+        <img id="avatar" src="https://minotar.net/helm/mhf_question/64.png" draggable="false">
         <div id="versions" style="visibility: hidden;"></div>
         <script>
             electronAPI.on('accounts', (event, accountList, index) => {
