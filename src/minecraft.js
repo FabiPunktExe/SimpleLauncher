@@ -2,7 +2,7 @@ const { existsSync } = require("original-fs")
 const { getDirectory, runSync, runAsync, getPath } = require("./util")
 const { join, dirname } = require("path")
 const { spawnSync, spawn, } = require("child_process")
-const { mkdirSync, readFileSync, statSync, writeFileSync } = require("fs")
+const { mkdirSync, readFileSync, statSync, writeFileSync, renameSync, rmdirSync, rm, rmSync, rename, copyFileSync, cp, cpSync, readdirSync } = require("fs")
 const { homedir, platform } = require("os")
 const { downloadJava, getJavaVersion } = require("./java")
 const { arch, env, stdout } = require("process")
@@ -222,10 +222,7 @@ const launch = async (version, account, statusCallback) => {
     var jvmArguments = [
         `-Xmx${memory}M`,
         '-Dlog4j2.formatMsgNoLookups=true',
-        '-Dfabric.addMods=' + version.mods.map(mod => {
-            const fileName = mod.split('/')[mod.split('/').length - 1]
-            return join(dir, 'mods', fileName)
-        }).join(separator)
+        '-Dfabric.addMods=' + readdirSync(join(dir, 'mods')).map(mod => join(dir, 'mods', mod)).join(separator)
     ]
     meta.arguments.jvm.filter(arg => !arg.rules || arg.rules.every(checkRule)).forEach(arg => {
         if (arg.value) {
@@ -233,7 +230,6 @@ const launch = async (version, account, statusCallback) => {
             else jvmArguments.push(arg.value)
         } else jvmArguments.push(arg)
     })
-    console.log(jvmArguments)
     var arguments = []
     arguments = arguments.concat(jvmArguments)
     arguments.push(meta.mainClass)
@@ -243,10 +239,19 @@ const launch = async (version, account, statusCallback) => {
             else arguments.push(arg.value)
         } else arguments.push(arg)
     })
+    if (existsSync(join(getDirectory(), 'tmpmods'))) rmSync(join(getDirectory(), 'tmpmods'), {recursive: true, force: true})
+    cpSync(join(getMinecraftDir(), 'mods'), join(getDirectory(), 'tmpmods'), {recursive: true, force: true})
+    rmSync(join(getMinecraftDir(), 'mods'), {recursive: true, force: true})
     spawn('java', insertValues(arguments, values), {
         cwd: getMinecraftDir(),
         env: {PATH: path}
-    }).stdout.pipe(stdout)
+    }).stdout.on('data', data => {
+        if (data.toString().includes('Loading ') &&
+            data.toString().includes(' mods:')) {
+            cp(join(getDirectory(), 'tmpmods'), join(getMinecraftDir(), 'mods'), {recursive: true, force: true}, () => {})
+            rm(join(getDirectory(), 'tmpmods'), {recursive: true, force: true}, () => {})
+        }
+    }).pipe(stdout)
     statusCallback('done')
 }
 
