@@ -20,7 +20,7 @@ body {
 
 #logo {
     position: fixed;
-    width: auto;
+    width: max-content;
     height: 14vh;
     top: 20vh;
     left: 50%;
