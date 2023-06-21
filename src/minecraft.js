@@ -58,7 +58,7 @@ async function downloadLibraries(versionMeta) {
         if (!existsSync(join(dir, library.downloads.artifact.path))) {
             log(`Downloading library ${library.name}...`)
             const libraryDir = dirname(join(dir, library.downloads.artifact.path))
-            if (!existsSync(libraryDir)) mkdirSync(libraryDir)
+            if (!existsSync(libraryDir)) mkdirSync(libraryDir, {recursive: true})
             spawnSync('curl', ['-L', library.downloads.artifact.url, '-o', join(dir, library.downloads.artifact.path)])
             log(`Successfully downloaded library ${library.name}...`)
         }

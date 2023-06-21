@@ -43,7 +43,7 @@ async function downloadNext(dir, downloads, files, filecount) {
         files.shift()
         log(`Successfully created directory ${file} (${files.length}/${filecount} remaining)`)
         if (files.length == 0) return true
-        else return await downloadNext(dir, downloads, files, filecount, callback)
+        else return await downloadNext(dir, downloads, files, filecount)
     } else if ('downloads' in data && 'raw' in data.downloads) {
         log(`Downloading ${file}...`)
         try {
@@ -64,7 +64,7 @@ async function downloadNext(dir, downloads, files, filecount) {
         files.shift()
         log(`Cannot download ${file} (${files.length}/${filecount} remaining)`)
         if (files.length == 0) return true
-        else return await downloadNext(dir, downloads, files, filecount, callback)
+        else return await downloadNext(dir, downloads, files, filecount)
     }
 }
 
