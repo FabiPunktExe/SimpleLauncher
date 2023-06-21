@@ -1,6 +1,6 @@
 {
   "name": "simplelauncher",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "Launcher for SimpleClient",
   "main": "src/main.js",
   "scripts": {
@@ -32,7 +32,7 @@
   "build": {
     "appId": "simpleclient.simplelauncher",
     "productName": "SimpleLauncher",
-    "artifactName": "${productName}-${version}.${ext}",
+    "artifactName": "SimpleClient-Installer.${ext}",
     "icon": "src/gui/icon.ico",
     "win": {
       "target": "msi"
@@ -43,7 +43,7 @@
       "runAfterFinish": true,
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
-      "shortcutName": "SimpeClient"
+      "shortcutName": "SimpleClient"
     }
   }
 }
