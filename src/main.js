@@ -8,7 +8,7 @@ const { openAuthWindow, getAccounts } = require('./auth');
 const { checkForUpdates, update } = require('./updater');
 
 if (!electronIsDev) {
-    checkForUpdates(() => {
+    checkForUpdates(async () => {
         require('dialog-node').question('An update for SimpleLauncher is available.\nShould it be downloaded in the background?', 'SimpleLauncher', 0, (code, value, stderr) => {
             if (value == 'OK') update()
         })
