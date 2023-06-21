@@ -2,15 +2,11 @@ const { platform } = require('os')
 const { app, ipcMain } = require('electron')
 const { openWindow } = require('./gui/gui');
 const { exit } = require('process');
-const { autoUpdater } = require('electron-updater');
 const electronIsDev = require('electron-is-dev');
 const { getSimpleClientVersions, launch } = require('./minecraft');
 const { openAuthWindow, getAccounts } = require('./auth');
 
 if (!electronIsDev) {
-    autoUpdater.allowPrerelease = true;
-    autoUpdater.autoDownload = true;
-    autoUpdater.autoInstallOnAppQuit = true;
 }
 
 if (platform() == 'win32' || platform() == 'linux') {

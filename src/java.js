@@ -1,7 +1,7 @@
 const { platform } = require("os")
 const { runSync, getDirectory } = require("./util")
 const { join } = require("path")
-const { mkdirSync, existsSync, rmSync, writeFile, writeFileSync } = require("fs")
+const { mkdirSync, existsSync, rmSync, writeFileSync } = require("fs")
 
 const log = (...data) => console.log('[Java Download] ' + data)
 
