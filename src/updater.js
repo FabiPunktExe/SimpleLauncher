@@ -1,16 +1,17 @@
 const { platform } = require("os")
 const { join } = require("path")
-const { env } = require("process")
 const { getDirectory } = require("./util")
-const { execFile, spawnSync, spawn } = require("child_process")
-const { existsSync, mkdirSync } = require("fs")
+const { execFile, spawnSync } = require("child_process")
+const { existsSync, mkdirSync, readFileSync } = require("fs")
+const { path } = require("app-root-path")
 
 const repository = 'FabiPunktExe/SimpleLauncher'
 
 const log = (...data) => console.log('[Updater] ' + data)
 
 function getLocalVersion() {
-    return env.npm_package_version
+    const file = join(path, 'package.json')
+    return JSON.parse(readFileSync(file)).version;
 }
 
 async function getRemoteVersion() {
