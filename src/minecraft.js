@@ -1,8 +1,8 @@
 const { existsSync } = require("original-fs")
-const { getDirectory, runSync, runAsync, getPath } = require("./util")
+const { getDirectory, runSync, getPath } = require("./util")
 const { join, dirname } = require("path")
 const { spawnSync, spawn, } = require("child_process")
-const { mkdirSync, readFileSync, statSync, writeFileSync, renameSync, rmdirSync, rm, rmSync, rename, copyFileSync, cp, cpSync, readdirSync } = require("fs")
+const { mkdirSync, readFileSync, statSync, rm, rmSync, cp, cpSync, readdirSync } = require("fs")
 const { homedir, platform } = require("os")
 const { downloadJava, getJavaVersion } = require("./java")
 const { arch, env, stdout } = require("process")
@@ -121,7 +121,7 @@ async function downloadVersion(version, dir, statusCallback) {
         log(`Successfully downloaded ${version.minecraft_version}/${version.minecraft_version}.json`)
     }
     const minecraftVersionMeta = JSON.parse(readFileSync(join(minecraftVersionDir, `${version.minecraft_version}.json`)))
-    if (!getJavaVersion() || parseInt(getJavaVersion().split('.')) < 17) {
+    if (!getJavaVersion() || parseInt(getJavaVersion().split('.')[0]) < 17) {
         statusCallback('downloading_java_starting')
         if (downloadJava(minecraftVersionMeta.javaVersion.component)) {
             statusCallback('downloading_java_done')

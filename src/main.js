@@ -5,8 +5,14 @@ const { exit } = require('process');
 const electronIsDev = require('electron-is-dev');
 const { getSimpleClientVersions, launch } = require('./minecraft');
 const { openAuthWindow, getAccounts } = require('./auth');
+const { checkForUpdates, update } = require('./updater');
 
 if (!electronIsDev) {
+    checkForUpdates(() => {
+        require('dialog-node').question('An update for SimpleLauncher is available.\nShould it be downloaded in the background?', 'SimpleLauncher', 0, (code, value, stderr) => {
+            if (value == 'OK') update()
+        })
+    })
 }
 
 if (platform() == 'win32' || platform() == 'linux') {

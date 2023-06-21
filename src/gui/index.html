@@ -13,6 +13,7 @@
         <div id="accounts" style="visibility: hidden;">
             <button class="account" onclick="electronAPI.send('login')" style="margin-bottom: 0.5vh;">Add Account</button>
         </div>
+        <button id="account" onclick="clickAccountsButton()"><p style="visibility: hidden;">Click to switch</p></button>
         <script>
             const accounts = document.getElementById('accounts')
             function clickAccountsButton() {
@@ -20,8 +21,40 @@
                 else if (accounts.style.visibility == 'visible') accounts.style.visibility = 'hidden'
                 else accounts.style.visibility = 'visible'
             }
+            electronAPI.on('launch', (event, status) => {
+                if (status == 'starting') {
+                    document.getElementById('launch').disabled = true
+                    document.getElementById('launch').innerText = 'Launching'
+                } else if (status == 'download_starting') {
+                    document.getElementById('launch').innerText = 'Downloading'
+                } else if (status == 'downloading_java_starting') {
+                    document.getElementById('launch').innerText = 'Downloading Java'
+                } else if (status == 'downloading_java_done') {
+                    document.getElementById('launch').innerText = 'Downloading'
+                } else if (status == 'downloading_libraries_starting') {
+                    document.getElementById('launch').innerText = 'Downloading Libraries'
+                } else if (status == 'downloading_libraries_done') {
+                    document.getElementById('launch').innerText = 'Downloading'
+                } else if (status == 'downloading_assets_starting') {
+                    document.getElementById('launch').innerText = 'Downloading Assets'
+                } else if (status == 'downloading_assets_done') {
+                    document.getElementById('launch').innerText = 'Downloading'
+                } else if (status == 'downloading_mods_starting') {
+                    document.getElementById('launch').innerText = 'Downloading Mods'
+                } else if (status == 'downloading_mods_done') {
+                    document.getElementById('launch').innerText = 'Downloading'
+                } else if (status == 'download_done') {
+                    document.getElementById('launch').innerText = 'Launching'
+                } else if (status == 'authenticating') {
+                    document.getElementById('launch').innerText = 'Authenticating'
+                } else if (status == 'launching') {
+                    document.getElementById('launch').innerText = 'Launching'
+                } else if (status == 'done' || status == 'error') {
+                    document.getElementById('launch').disabled = false
+                    document.getElementById('launch').innerText = `LAUNCH ${document.getElementById('versions-button').innerText}`
+                }
+            })
         </script>
-        <button id="account" onclick="clickAccountsButton()"><p style="visibility: hidden;">Click to switch</p></button>
         <img id="avatar" src="https://minotar.net/helm/mhf_question/64.png" draggable="false">
         <div id="versions" style="visibility: hidden;"></div>
         <script>
@@ -87,9 +120,9 @@
             electronAPI.on('simpleclient_versions', (event, versionList) => {
                 Array.from(versions.children).forEach(child => child.remove())
                 const changeVersion = version => {
-                        document.getElementById('launch').innerText = 'LAUNCH ' + version.minecraft_version
-                        document.getElementById('launch').value = version.id
-                        document.getElementById('versions-button').innerText = version.minecraft_version
+                    document.getElementById('launch').innerText = `LAUNCH ${version.minecraft_version}`
+                    document.getElementById('launch').value = version.id
+                    document.getElementById('versions-button').innerText = version.minecraft_version
                 }
                 versionList.forEach(version => {
                     const button = document.createElement('button')
