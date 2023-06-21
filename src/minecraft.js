@@ -242,16 +242,20 @@ const launch = async (version, account, statusCallback) => {
     if (existsSync(join(getDirectory(), 'tmpmods'))) rmSync(join(getDirectory(), 'tmpmods'), {recursive: true, force: true})
     cpSync(join(getMinecraftDir(), 'mods'), join(getDirectory(), 'tmpmods'), {recursive: true, force: true})
     rmSync(join(getMinecraftDir(), 'mods'), {recursive: true, force: true})
-    spawn('java', insertValues(arguments, values), {
+    console.log('[Minecraft] Launching...')
+    const process = spawn('java', insertValues(arguments, values), {
         cwd: getMinecraftDir(),
-        env: {PATH: path}
-    }).stdout.on('data', data => {
+        env: {PATH: path},
+        detached: true
+    })
+    process.stdout.on('data', data => {
         if (data.toString().includes('Loading ') &&
             data.toString().includes(' mods:')) {
-            cp(join(getDirectory(), 'tmpmods'), join(getMinecraftDir(), 'mods'), {recursive: true, force: true}, () => {})
+            cpSync(join(getDirectory(), 'tmpmods'), join(getMinecraftDir(), 'mods'), {recursive: true, force: true})
             rm(join(getDirectory(), 'tmpmods'), {recursive: true, force: true}, () => {})
         }
     }).pipe(stdout)
+    process.unref()
     statusCallback('done')
 }
 
