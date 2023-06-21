@@ -121,9 +121,9 @@ async function downloadVersion(version, dir, statusCallback) {
         log(`Successfully downloaded ${version.minecraft_version}/${version.minecraft_version}.json`)
     }
     const minecraftVersionMeta = JSON.parse(readFileSync(join(minecraftVersionDir, `${version.minecraft_version}.json`)))
-    if (!getJavaVersion() || parseInt(getJavaVersion().split('.')[0]) < 17) {
+    if (!existsSync(join(getDirectory(), 'java', minecraftVersionMeta.javaVersion.component))) {
         statusCallback('downloading_java_starting')
-        if (downloadJava(minecraftVersionMeta.javaVersion.component)) {
+        if (await downloadJava(minecraftVersionMeta.javaVersion.component)) {
             statusCallback('downloading_java_done')
         } else {
             statusCallback('error')
