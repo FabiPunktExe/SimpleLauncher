@@ -60,6 +60,9 @@ body {
     font-weight: 600;
     transition-duration: 0.2s;
     cursor: pointer;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
 
 #launch:hover {
@@ -87,6 +90,9 @@ body {
     font-weight: 600;
     transition-duration: 0.2s;
     cursor: pointer;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
 
 #account:hover {

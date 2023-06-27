@@ -137,15 +137,14 @@ const getMicrosoftData = async authorizationCode => {
 }
 
 const getMicrosoftDataByRefreshToken = async refreshToken => {
-    const response = await fetch('https://login.microsoftonline.com/consumers/oauth2/v2.0/token?', {
+    const response = await fetch('https://login.microsoftonline.com/consumers/oauth2/v2.0/token', {
         method: 'POST',
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
         body: new URLSearchParams({
             client_id: azureClientId,
             scope: scope,
             refresh_token: refreshToken,
-            redirect_uri: redirectUrl,
-            grant_type: 'authorization_code'
+            grant_type: 'refresh_token'
         })
     })
     if (response && response.ok) return await response.json()
@@ -225,9 +224,9 @@ const refreshTokens = async account => {
     var time = new Date().getTime()
     if (account.minecraft_access_tokens.find(token => token.expiration > time)) return true
     var xstsAccessToken = account.xsts_access_tokens.find(token => token.expiration > time)
-    var userhash = account.xbox_access_tokens.find(token => token.expiration > time).userhash
+    var userhash
     if (!xstsAccessToken) {
-        var xboxLiveAccessToken = account.xbox_access_tokens.find(token => token.expiration > time).token
+        var xboxLiveAccessToken = account.xbox_access_tokens.find(token => token.expiration > time)?.token
         if (!xboxLiveAccessToken) {
             var microsoftAccessToken = account.microsoft_access_tokens.find(token => token.expiration > time)
             if (!microsoftAccessToken) {
@@ -258,6 +257,7 @@ const refreshTokens = async account => {
             expiration: new Date(xstsData.NotAfter).getTime()
         }]
     }
+    if (!userhash) userhash = account.xbox_access_tokens.find(token => token.expiration > time).userhash
     var minecraftData = await getMinecraftData(userhash, xstsAccessToken)
     if (!minecraftData) return false
     var minecraftAccessToken = minecraftData.access_token

@@ -25,33 +25,30 @@
                 if (status == 'starting') {
                     document.getElementById('launch').disabled = true
                     document.getElementById('launch').innerText = 'Launching'
-                } else if (status == 'download_starting') {
+                } else if (status == 'downloading') {
                     document.getElementById('launch').innerText = 'Downloading'
-                } else if (status == 'downloading_java_starting') {
+                } else if (status == 'downloading_meta') {
+                    document.getElementById('launch').innerText = 'Downloading Metadata'
+                } else if (status == 'downloading_java') {
                     document.getElementById('launch').innerText = 'Downloading Java'
-                } else if (status == 'downloading_java_done') {
-                    document.getElementById('launch').innerText = 'Downloading'
-                } else if (status == 'downloading_libraries_starting') {
+                } else if (status == 'downloading_fabric') {
+                    document.getElementById('launch').innerText = 'Downloading Fabric Loader'
+                } else if (status == 'downloading_libraries') {
                     document.getElementById('launch').innerText = 'Downloading Libraries'
-                } else if (status == 'downloading_libraries_done') {
-                    document.getElementById('launch').innerText = 'Downloading'
-                } else if (status == 'downloading_assets_starting') {
+                } else if (status == 'downloading_assets') {
                     document.getElementById('launch').innerText = 'Downloading Assets'
-                } else if (status == 'downloading_assets_done') {
-                    document.getElementById('launch').innerText = 'Downloading'
-                } else if (status == 'downloading_mods_starting') {
+                } else if (status == 'downloading_mods') {
                     document.getElementById('launch').innerText = 'Downloading Mods'
-                } else if (status == 'downloading_mods_done') {
-                    document.getElementById('launch').innerText = 'Downloading'
-                } else if (status == 'download_done') {
-                    document.getElementById('launch').innerText = 'Launching'
                 } else if (status == 'authenticating') {
                     document.getElementById('launch').innerText = 'Authenticating'
                 } else if (status == 'launching') {
                     document.getElementById('launch').innerText = 'Launching'
-                } else if (status == 'done' || status == 'error') {
+                } else if (status == 'done') {
                     document.getElementById('launch').disabled = false
                     document.getElementById('launch').innerText = `LAUNCH ${document.getElementById('versions-button').innerText}`
+                } else if (status == 'error') {
+                    document.getElementById('launch').disabled = false
+                    document.getElementById('launch').innerText = 'An error ocurred'
                 }
             })
         </script>

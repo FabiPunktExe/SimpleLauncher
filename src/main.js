@@ -10,18 +10,16 @@ const { spawn } = require('child_process');
 const { join } = require('path');
 const { path } = require('app-root-path');
 
-if (!electronIsDev) {
-    checkForUpdates(async () => {
-        if (platform() == 'win32') {
-            spawn('cscript', [
-                '//nologo',
-                join(path, 'src', 'yesno.vbs'),
-                'SimpleClient',
-                'An update for SimpleLauncher is available.\nShould it be downloaded in the background?'
-            ]).stdout.on('data', data => {if (data.toString().includes('6')) update()})
-        }
-    })
-}
+checkForUpdates(async () => {
+    if (platform() == 'win32') {
+        spawn('cscript', [
+              '//nologo',
+              join(path, 'src', 'yesno.vbs'),
+              'SimpleClient',
+              'An update for SimpleLauncher is available.\nShould it be downloaded in the background?'
+        ]).stdout.on('data', data => {if (data.toString().includes('6')) update()})
+    }
+})
 
 if (platform() == 'win32' || platform() == 'linux') {
     app.disableHardwareAcceleration()
