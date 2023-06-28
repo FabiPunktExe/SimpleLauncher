@@ -14,7 +14,7 @@ const downloadFabric = async (version, meta) => {
         const fabricInstallerResponse = await fetch('https://meta.fabricmc.net/v2/versions/installer')
         if (!fabricInstallerResponse) return false
         const fabricInstallerJson = await fabricInstallerResponse.json()
-        const fabricInstallerFile = join(dir, `fabric-installer-${fabricInstallerJson[0].version}.jar`)
+        const fabricInstallerFile = join(getDirectory(), 'versions', version.id, `fabric-installer-${fabricInstallerJson[0].version}.jar`)
         if (!downloadFiles([[fabricInstallerJson[0].url, fabricInstallerFile]], undefined, log)) return false
         log('Executing Fabric installer...')
         const args = ['-jar', fabricInstallerFile, 'client', '-dir', getMinecraftDir(), '-mcversion', version.minecraft_version, '-loader', version.fabric_version, '-noprofile']
