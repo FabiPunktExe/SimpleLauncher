@@ -36,7 +36,7 @@ const checkForUpdates = async () => {
 }
 
 if (!isMainThread) {
-    const response = fetch(`https://api.github.com/repos/${repository}/releases/latest`).then(async response => {
+    fetch(`https://api.github.com/repos/${repository}/releases/latest`).then(async response => {
         if (response && response.ok) {
             const json = await response.json()
             const dir = join(getDirectory(), 'updates')
