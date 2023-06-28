@@ -1,10 +1,10 @@
 const { platform } = require("os")
-const { join, resolve } = require("path")
+const { join } = require("path")
 const { getDirectory } = require("./util")
-const { execFile, spawnSync } = require("child_process")
+const { execFile, spawn } = require("child_process")
 const { existsSync, mkdirSync, readFileSync } = require("fs")
 const { path } = require("app-root-path")
-const { isMainThread } = require("worker_threads")
+const { exit } = require("process")
 
 const repository = 'FabiPunktExe/SimpleLauncher'
 
@@ -35,24 +35,6 @@ const checkForUpdates = async () => {
     return remoteVersion.length > 0
 }
 
-/*if (!isMainThread) {
-    fetch(`https://api.github.com/repos/${repository}/releases/latest`).then(async response => {
-        if (response && response.ok) {
-            const json = await response.json()
-            const dir = join(getDirectory(), 'updates')
-            if (!existsSync(dir)) mkdirSync(dir, {recursive: true})
-            if (platform() == 'win32') {
-                log('Downloading update...')
-                spawnSync('curl', ['-L', json.assets[0].browser_download_url, '-o', join(dir, json.assets[0].name)])
-                log('Successfully downloaded update')
-                log('Installing update...')
-                execFile(join(dir, json.assets[0].name), {shell: true}).unref()
-                exit(0)
-            }
-        }
-    })
-}*/
-
 const update = async () => setTimeout(() => fetch(`https://api.github.com/repos/${repository}/releases/latest`).then(async response => {
     if (response && response.ok) {
         const json = await response.json()
@@ -60,13 +42,14 @@ const update = async () => setTimeout(() => fetch(`https://api.github.com/repos/
         if (!existsSync(dir)) mkdirSync(dir, {recursive: true})
         if (platform() == 'win32') {
             log('Downloading update...')
-            spawnSync('curl', ['-L', json.assets[0].browser_download_url, '-o', join(dir, json.assets[0].name)])
-            log('Successfully downloaded update')
-            log('Installing update...')
-            execFile(join(dir, json.assets[0].name), {shell: true}).unref()
-            exit(0)
+            spawn('curl', ['-L', json.assets[0].browser_download_url, '-o', join(dir, json.assets[0].name)]).on('exit', () => {
+                log('Successfully downloaded update')
+                log('Installing update...')
+                execFile(join(dir, json.assets[0].name), {shell: true}).unref()
+                exit(0)
+            })
         }
     }
-}))//new Worker(__filename)
+}))
 
 module.exports = {checkForUpdates, update}
