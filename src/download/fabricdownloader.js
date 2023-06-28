@@ -1,5 +1,5 @@
 const { join } = require("path")
-const { existsSync, statSync } = require("fs")
+const { existsSync, statSync, rmSync } = require("fs")
 const { downloadFiles } = require("./downloader")
 const { spawnSync } = require("child_process")
 const { getDirectory, getMinecraftDir } = require("../util")
@@ -24,7 +24,8 @@ const downloadFabric = async (version, meta) => {
         }).signal != 0) return false
         log('Successfully installed Fabric Loader')
     }
-    if (!existsSync(join(fabricDir, `${fabric}.jar`)) || statSync(join(fabricDir, `${fabric}.jar`)).size == 0) {
+    if (statSync(join(fabricDir, `${fabric}.jar`)).size == 0) rmSync(join(fabricDir, `${fabric}.jar`))
+    if (!existsSync(join(fabricDir, `${fabric}.jar`))) {
         return await downloadFiles([[meta.downloads.client.url, join(fabricDir, `${fabric}.jar`)]], undefined, log)
     } else return true
 }
