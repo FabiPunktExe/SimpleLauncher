@@ -112,11 +112,13 @@ const launch = async (version, account, statusCallback) => {
         launcher_version: env.npm_package_version,
         classpath: classpath
     }
+    const modsDir = join(getDirectory(), 'versions', version.id, 'mods')
     var jvmArguments = [
         `-Xmx${memory}M`,
         '-Dlog4j2.formatMsgNoLookups=true',
-        '-Dfabric.addMods=' + readdirSync(join(dir, 'mods')).map(mod => join(dir, 'mods', mod)).join(separator)
+        '-Dfabric.addMods=' + readdirSync(modsDir).map(mod => join(modsDir, mod)).join(separator)
     ]
+    console.log(jvmArguments)
     meta.arguments.jvm.filter(arg => !arg.rules || arg.rules.every(checkRule)).forEach(arg => {
         if (arg.value) {
             if (Array.isArray(arg.value)) for (value of arg.value) jvmArguments.push(value)
