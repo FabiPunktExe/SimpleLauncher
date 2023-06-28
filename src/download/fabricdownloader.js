@@ -18,9 +18,9 @@ const downloadFabric = async (version, meta) => {
         if (!downloadFiles([[fabricInstallerJson[0].url, fabricInstallerFile]], undefined, log)) return false
         log('Executing Fabric installer...')
         const args = ['-jar', fabricInstallerFile, 'client', '-dir', getMinecraftDir(), '-mcversion', version.minecraft_version, '-loader', version.fabric_version, '-noprofile']
-        if (spawnSync('javaw', args, {
+        if (spawnSync(join(getJavaPath(meta.javaVersion.component), 'bin', 'javaw'), args, {
             cwd: getDirectory(),
-            env: {PATH: getJavaPath(meta.javaVersion.component)}
+            env: {PATH: env.PATH + separator + getJavaPath(meta.javaVersion.component)}
         }).signal != 0) return false
         log('Successfully installed Fabric Loader')
     }

@@ -5,6 +5,13 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';">
         <link rel="stylesheet" href="style.css">
+        <script>
+            electronAPI.on('confirm', (event, data) => {
+                const result = confirm(data.message, data.title)
+                console.log(result)
+                electronAPI.send(data.channel, result)
+            })
+        </script>
     </head>
     <body>
         <img id="background-image" src="background.jpg" draggable="false">

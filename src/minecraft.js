@@ -86,7 +86,6 @@ const launch = async (version, account, statusCallback) => {
     meta.arguments.jvm = meta.arguments.jvm.concat(fabricMeta.arguments.jvm)
     meta.arguments.game = meta.arguments.game.concat(fabricMeta.arguments.game)
     const separator = platform() == 'win32' ? ';' : platform() == 'linux' ? ':' : undefined
-    const path = env.PATH + separator + getJavaPath(meta.javaVersion.component)
     const nativesDirectory = join(dir, 'natives', version.minecraft_version)
     const libraryDir = join(dir, 'libraries')
     const libraries = meta.libraries.map(library => {
@@ -137,9 +136,9 @@ const launch = async (version, account, statusCallback) => {
     cpSync(join(dir, 'mods'), join(getDirectory(), 'tmpmods'), {recursive: true, force: true})
     rmSync(join(dir, 'mods'), {recursive: true, force: true})
     log('Launching...')
-    const process = spawn('java', insertValues(arguments, values), {
+    const process = spawn(join(getJavaPath(meta.javaVersion.component), 'bin', 'javaw'), insertValues(arguments, values), {
         cwd: dir,
-        env: {PATH: path},
+        env: {PATH: env.PATH + separator + getJavaPath(meta.javaVersion.component)},
         detached: true
     })
     process.stdout.on('data', data => {
