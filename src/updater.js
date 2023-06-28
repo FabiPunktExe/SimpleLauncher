@@ -35,7 +35,7 @@ const checkForUpdates = async () => {
     return remoteVersion.length > 0
 }
 
-if (!isMainThread) {
+/*if (!isMainThread) {
     fetch(`https://api.github.com/repos/${repository}/releases/latest`).then(async response => {
         if (response && response.ok) {
             const json = await response.json()
@@ -51,8 +51,22 @@ if (!isMainThread) {
             }
         }
     })
-}
+}*/
 
-const update = async () => new Worker(resolve(join(__dirname, 'updater.js')))
+const update = async () => setTimeout(() => fetch(`https://api.github.com/repos/${repository}/releases/latest`).then(async response => {
+    if (response && response.ok) {
+        const json = await response.json()
+        const dir = join(getDirectory(), 'updates')
+        if (!existsSync(dir)) mkdirSync(dir, {recursive: true})
+        if (platform() == 'win32') {
+            log('Downloading update...')
+            spawnSync('curl', ['-L', json.assets[0].browser_download_url, '-o', join(dir, json.assets[0].name)])
+            log('Successfully downloaded update')
+            log('Installing update...')
+            execFile(join(dir, json.assets[0].name), {shell: true}).unref()
+            exit(0)
+        }
+    }
+}))//new Worker(__filename)
 
 module.exports = {checkForUpdates, update}
