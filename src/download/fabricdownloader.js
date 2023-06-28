@@ -4,6 +4,7 @@ const { downloadFiles } = require("./downloader")
 const { spawnSync } = require("child_process")
 const { getDirectory, getMinecraftDir } = require("../util")
 const { getJavaPath } = require("./javadownloader")
+const { env } = require("process")
 
 const log = (...data) => console.log('[Fabric Download] ' + data)
 
