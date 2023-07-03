@@ -1,5 +1,5 @@
 const { BrowserWindow } = require("electron")
-const { readFileSync, existsSync, writeFileSync } = require("original-fs")
+const { readFileSync, existsSync, writeFileSync } = require("fs")
 const { getDirectory } = require("./util")
 const { join } = require("path")
 
