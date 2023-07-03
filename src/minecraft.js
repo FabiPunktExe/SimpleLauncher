@@ -1,7 +1,7 @@
 const { getDirectory, getMinecraftDir } = require("./util")
 const { join } = require("path")
 const { spawn, } = require("child_process")
-const { readFileSync, rmSync, cpSync, readdirSync } = require("fs")
+const { readFileSync, rmSync, cpSync, readdirSync, existsSync } = require("fs")
 const { platform } = require("os")
 const { arch, env, stdout } = require("process")
 const { downloadMeta } = require("./download/metadownloader")
@@ -188,7 +188,7 @@ const launch = (version, account, statusCallback) => {
                 } else arguments.push(arg)
             })
             rmSync(join(getDirectory(), 'tmpmods'), {recursive: true, force: true})
-            cpSync(join(dir, 'mods'), join(getDirectory(), 'tmpmods'), {recursive: true, force: true})
+            if (existsSync(join(dir, 'mods'))) cpSync(join(dir, 'mods'), join(getDirectory(), 'tmpmods'), {recursive: true, force: true})
             rmSync(join(dir, 'mods'), {recursive: true, force: true})
             log('Launching...')
             const process = spawn(join(getJavaPath(meta.javaVersion.component), 'bin', 'javaw'), insertValues(arguments, values), {
@@ -198,7 +198,7 @@ const launch = (version, account, statusCallback) => {
             })
             process.stdout.on('data', data => {
                 if (data.toString().includes('Loading ') && data.toString().includes(' mods:')) {
-                    cpSync(join(getDirectory(), 'tmpmods'), join(dir, 'mods'), {recursive: true, force: true})
+                    if (existsSync(join(getDirectory(), 'tmpmods'))) cpSync(join(getDirectory(), 'tmpmods'), join(dir, 'mods'), {recursive: true, force: true})
                 }
             }).pipe(stdout)
             process.unref()
