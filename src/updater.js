@@ -48,6 +48,14 @@ const update = async () => setTimeout(() => fetch(`https://api.github.com/repos/
                 execFile(join(dir, json.assets[0].name), {shell: true}).unref()
                 exit(0)
             })
+        } else if (platform() == 'linux') {
+            log('Downloading update...')
+            spawn('curl', ['-L', json.assets[0].browser_download_url, '-o', join(dir, json.assets[1].name)]).on('exit', () => {
+                log('Successfully downloaded update')
+                log('Installing update...')
+                execFile(join(dir, json.assets[0].name), {shell: true}).unref()
+                exit(0)
+            })
         }
     }
 }))
