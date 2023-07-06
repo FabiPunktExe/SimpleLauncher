@@ -12,7 +12,10 @@
     "type": "git",
     "url": "git+https://github.com/FabiPunktExe/SimpleLauncher.git"
   },
-  "author": "Fabi.exe",
+  "author": {
+    "name": "Fabi.exe",
+    "email": "MrStupsi@gmx.de"
+  },
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/FabiPunktExe/SimpleLauncher/issues"
