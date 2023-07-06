@@ -15,10 +15,15 @@
   "author": "Fabi.exe",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/FabiPunktExe/SimpleLauncher/issues",
-    "email": "MrStupsi@gmx.de"
+    "url": "https://github.com/FabiPunktExe/SimpleLauncher/issues"
   },
   "homepage": "https://simpleclient.github.io",
+  "contributors": [
+    {
+      "name": "Fabi.exe",
+      "email": "MrStupsi@gmx.de"
+    }
+  ],
   "dependencies": {
     "app-root-path": "^3.1.0",
     "child_process": "^1.0.2",
