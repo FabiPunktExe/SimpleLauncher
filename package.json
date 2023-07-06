@@ -15,7 +15,8 @@
   "author": "Fabi.exe",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/FabiPunktExe/SimpleLauncher/issues"
+    "url": "https://github.com/FabiPunktExe/SimpleLauncher/issues",
+    "email": "MrStupsi@gmx.de"
   },
   "homepage": "https://simpleclient.github.io",
   "dependencies": {
