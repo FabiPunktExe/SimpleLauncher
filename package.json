@@ -1,11 +1,11 @@
 {
   "name": "simplelauncher",
-  "version": "0.3.12",
+  "version": "0.3.14",
   "description": "Launcher for SimpleClient",
   "main": "src/main.js",
   "scripts": {
     "start": "electron .",
-    "build": "electron-builder --windows",
+    "build": "electron-builder --windows --linux",
     "dist": "electron-builder build"
   },
   "repository": {
@@ -44,6 +44,11 @@
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
       "shortcutName": "SimpleClient"
+    },
+    "linux": {
+      "target": "deb"
+    },
+    "deb": {
     }
   }
 }
