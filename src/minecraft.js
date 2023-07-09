@@ -11,7 +11,7 @@ const { downloadLibraries } = require("./download/librarydownloader")
 const { downloadAssets } = require("./download/assetdownloader")
 const { downloadMods } = require("./download/moddownloader")
 
-const versionsUrl = 'https://simpeclient.github.io/SimpleWebsite/versions.json'
+const versionsUrl = 'https://simpleclientdevelopment.github.io/SimpleWebsite/versions.json'
 var memory = 2048
 
 const log = (...data) => console.log('[Minecraft] ' + data)
