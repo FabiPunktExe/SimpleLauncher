@@ -6,7 +6,7 @@ const { existsSync, mkdirSync, readFileSync } = require("fs")
 const { path } = require("app-root-path")
 const { exit } = require("process")
 
-const repository = 'FabiPunktExe/SimpleLauncher'
+const repository = 'SimpleClientDevelopment/SimpleLauncher'
 
 const log = (...data) => console.log('[Updater] ' + data)
 

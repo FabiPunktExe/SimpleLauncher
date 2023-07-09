@@ -10,7 +10,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/FabiPunktExe/SimpleLauncher.git"
+    "url": "git+https://github.com/SimpleClientDevelopment/SimpleLauncher.git"
   },
   "author": {
     "name": "Fabi.exe",
@@ -18,9 +18,9 @@
   },
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/FabiPunktExe/SimpleLauncher/issues"
+    "url": "https://github.com/SimpleClientDevelopment/SimpleLauncher/issues"
   },
-  "homepage": "https://simpleclient.github.io",
+  "homepage": "https://simpleclient.diruptio.de",
   "contributors": [
     {
       "name": "Fabi.exe",
@@ -58,6 +58,7 @@
       "target": "deb"
     },
     "deb": {
+      "depends": []
     }
   }
 }
