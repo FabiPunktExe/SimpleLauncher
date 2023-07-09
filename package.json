@@ -1,6 +1,6 @@
 {
   "name": "simplelauncher",
-  "version": "0.3.14",
+  "version": "0.3.15",
   "description": "Launcher for SimpleClient",
   "main": "src/main.js",
   "scripts": {
@@ -53,12 +53,6 @@
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
       "shortcutName": "SimpleClient"
-    },
-    "linux": {
-      "target": "deb"
-    },
-    "deb": {
-      "depends": []
     }
   }
 }
