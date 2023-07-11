@@ -4,6 +4,7 @@ const { getDirectory } = require("./util")
 const { join } = require("path")
 
 var azureClientId = '116c8d52-e832-4ff4-b056-8018cf33a67f'
+azureClientId = '1ce6e35a-126f-48fd-97fb-54d143ac6d45'
 const redirectUrl = 'https://login.microsoftonline.com/common/oauth2/nativeclient'
 const scope = 'XboxLive.signin offline_access'
 var selectedAccount = 0
