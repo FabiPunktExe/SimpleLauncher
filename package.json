@@ -1,6 +1,6 @@
 {
   "name": "simplelauncher",
-  "version": "0.3.18",
+  "version": "0.3.19",
   "description": "Launcher for SimpleClient",
   "main": "src/main.js",
   "scripts": {
@@ -30,6 +30,7 @@
   "dependencies": {
     "app-root-path": "^3.1.0",
     "child_process": "^1.0.2",
+    "crypto": "^1.0.1",
     "electron-is-dev": "^2.0.0",
     "os": "^0.1.2",
     "path": "^0.12.7"

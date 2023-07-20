@@ -42,7 +42,6 @@ const downloadJava = (version, callback) => {
     getJavaDownloadsUrl(version, url => {
         if (url) {
             getJavaDownloads(url, downloads => {
-                console.log(downloads)
                 downloads = downloads.map(download => [download[1].downloads.raw.url, join(dir, download[0])])
                 downloadFilesAsync(downloads, undefined, log, callback)
             })

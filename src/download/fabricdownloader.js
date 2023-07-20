@@ -20,7 +20,9 @@ const downloadFabric = (version, meta, callback) => {
     const fabricDir = join(getMinecraftDir(), 'versions', fabric)
     if (existsSync(join(fabricDir, `${fabric}.json`))) downloadJar(version, meta, callback)
     else {
-        fetch('https://meta.fabricmc.net/v2/versions/installer').then(fabricInstallerResponse => {
+        var fabricInstallerUrl = 'https://meta.fabricmc.net/v2/versions/installer'
+        if (version.overrides.fabric_installer_url) fabricInstallerUrl = version.overrides.fabric_installer_url
+        fetch(fabricInstallerUrl).then(fabricInstallerResponse => {
             if (fabricInstallerResponse) {
                 fabricInstallerResponse.json().then(fabricInstallerJson => {
                     const fabricInstallerFile = join(getDirectory(), 'versions', version.id, `fabric-installer-${fabricInstallerJson[0].version}.jar`)
