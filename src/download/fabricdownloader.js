@@ -21,7 +21,7 @@ const downloadFabric = (version, meta, callback) => {
     if (existsSync(join(fabricDir, `${fabric}.json`))) downloadJar(version, meta, callback)
     else {
         var fabricInstallerUrl = 'https://meta.fabricmc.net/v2/versions/installer'
-        if (version.overrides.fabric_installer_url) fabricInstallerUrl = version.overrides.fabric_installer_url
+        if (version.overrides && version.overrides.fabric_installer_url) fabricInstallerUrl = version.overrides.fabric_installer_url
         fetch(fabricInstallerUrl).then(fabricInstallerResponse => {
             if (fabricInstallerResponse) {
                 fabricInstallerResponse.json().then(fabricInstallerJson => {
