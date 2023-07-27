@@ -4,15 +4,15 @@ const { join } = require('path')
 const { env } = require("process")
 
 const getDirectory = () => {
-    const directory = join(homedir(), '.simplelauncher')
+    const directory = platform() == 'win32' ? join(env.APPDATA, '.simplelauncher') : join(homedir(), '.simplelauncher')
     if (!existsSync(directory)) mkdirSync(directory)
     return directory
 }
 
 const getMinecraftDir = () => {
-    if (platform() == 'win32') return join(env.APPDATA, '.minecraft')
-    else if (platform() == 'linux')  return join(homedir(), '.minecraft')
-    else return undefined
+    const directory = platform() == 'win32' ? join(env.APPDATA, '.minecraft') : join(homedir(), '.minecraft')
+    if (!existsSync(directory)) mkdirSync(directory)
+    return directory
 }
 
 module.exports = {getDirectory, getMinecraftDir}
