@@ -74,6 +74,36 @@ body {
     cursor: default;
 }
 
+#launch-text-1 {
+    position: fixed;
+    width: calc(44vh - 14vh);
+    height: 4vh;
+    left: calc(50vw - 44vh / 2);
+    top: calc(50vh - 3px - 8.5vh);
+    color: #eeeeee;
+    font-size: 3vh;
+    font-weight: 600;
+    transition-duration: 0.2s;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+#launch-text-2 {
+    position: fixed;
+    width: calc(44vh - 14vh);
+    height: 4vh;
+    left: calc(50vw - 44vh / 2);
+    top: calc(50vh - 3px - 4.75vh);
+    color: #eeeeee;
+    font-size: 2vh;
+    font-weight: 600;
+    transition-duration: 0.2s;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
 #account {
     position: fixed;
     width: calc(44vh - 8vh + 2px);

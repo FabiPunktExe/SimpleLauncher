@@ -28,36 +28,37 @@
                 else if (accounts.style.visibility == 'visible') accounts.style.visibility = 'hidden'
                 else accounts.style.visibility = 'visible'
             }
+            const launchButton = document.getElementById('launch')
             electronAPI.on('launch', (event, status) => {
                 if (status == 'starting') {
-                    document.getElementById('launch').disabled = true
-                    document.getElementById('launch').innerText = 'Launching'
+                    launchButton.disabled = true
+                    launchButton.innerHTML = `<p id="launch-text-1">Launching ${document.getElementById('versions-button').innerText}</p><p id="launch-text-2"></p>`
                 } else if (status == 'downloading') {
-                    document.getElementById('launch').innerText = 'Downloading'
+                    launchButton.children[1].innerText = 'Downloading'
                 } else if (status == 'downloading_meta') {
-                    document.getElementById('launch').innerText = 'Downloading Metadata'
+                    launchButton.children[1].innerText = 'Downloading Metadata'
                 } else if (status == 'downloading_java') {
-                    document.getElementById('launch').innerText = 'Downloading Java'
+                    launchButton.children[1].innerText = 'Downloading Java'
                 } else if (status == 'downloading_fabric') {
-                    document.getElementById('launch').innerText = 'Downloading Fabric Loader'
+                    launchButton.children[1].innerText = 'Downloading Fabric Loader'
                 } else if (status == 'downloading_libraries') {
-                    document.getElementById('launch').innerText = 'Downloading Libraries'
+                    launchButton.children[1].innerText = 'Downloading Libraries'
                 } else if (status == 'extracting_natives') {
-                    document.getElementById('launch').innerText = 'Extracting Natives'
+                    launchButton.children[1].innerText = 'Extracting Natives'
                 } else if (status == 'downloading_assets') {
-                    document.getElementById('launch').innerText = 'Downloading Assets'
+                    launchButton.children[1].innerText = 'Downloading Assets'
                 } else if (status == 'downloading_mods') {
-                    document.getElementById('launch').innerText = 'Downloading Mods'
+                    launchButton.children[1].innerText = 'Downloading Mods'
                 } else if (status == 'authenticating') {
-                    document.getElementById('launch').innerText = 'Authenticating'
+                    launchButton.children[1].innerText = 'Authenticating'
                 } else if (status == 'launching') {
-                    document.getElementById('launch').innerText = 'Launching'
+                    launchButton.children[1].innerText = 'Launching'
                 } else if (status == 'done') {
-                    document.getElementById('launch').disabled = false
-                    document.getElementById('launch').innerText = `LAUNCH ${document.getElementById('versions-button').innerText}`
+                    launchButton.disabled = false
+                    launchButton.innerHTML = `LAUNCH ${document.getElementById('versions-button').innerText}`
                 } else if (status == 'error') {
-                    document.getElementById('launch').disabled = false
-                    document.getElementById('launch').innerText = 'An error ocurred'
+                    launchButton.disabled = false
+                    launchButton.innerHTML = `LAUNCH ${document.getElementById('versions-button').innerText}<p id="launch-text-2">An error ocurred</p>`
                 }
             })
         </script>
@@ -66,14 +67,14 @@
         <script>
             electronAPI.on('accounts', (event, accountList, index) => {
                 if (accountList.length == 0) {
-                    document.getElementById('launch').disabled = true
+                    launchButton.disabled = true
                     document.getElementById('account').value = undefined
                     document.getElementById('account').innerText = 'Login with Microsoft'
                     document.getElementById('avatar').src = 'https://minotar.net/helm/mhf_question/64.png'
                 } else {
                     Array.from(accounts.children).filter(child => child.id).forEach(child => child.remove())
                     const changeAccount = account => {
-                        document.getElementById('launch').disabled = false
+                        launchButton.disabled = false
                         document.getElementById('account').value = account.uuid
                         document.getElementById('account').innerText = account.name
                         document.getElementById('avatar').src = `https://minotar.net/helm/${account.uuid}/64.png`
@@ -98,19 +99,19 @@
             }
             electronAPI.on('auth', (event, status) => {
                 if (status == 'starting') {
-                    document.getElementById('launch').disabled = true
+                    launchButton.disabled = true
                     document.getElementById('account').disabled = true
                     document.getElementById('account').innerText = 'Authenticating...'
                 } else if (status == 'cancelled') {
-                    document.getElementById('launch').disabled = accounts.children.length <= 1
+                    launchButton.disabled = accounts.children.length <= 1
                     document.getElementById('account').disabled = false
                     document.getElementById('account').innerText = 'Login with Microsoft'
                 } else if (status == 'error') {
-                    document.getElementById('launch').disabled = accounts.children.length <= 1
+                    launchButton.disabled = accounts.children.length <= 1
                     document.getElementById('account').disabled = false
                     document.getElementById('account').innerText = 'Login with Microsoft'
                 } else if (status == 'done') {
-                    document.getElementById('launch').disabled = false
+                    launchButton.disabled = false
                     document.getElementById('account').disabled = false
                     document.getElementById('account').innerText = ''
                 }
@@ -126,8 +127,8 @@
             electronAPI.on('simpleclient_versions', (event, versionList) => {
                 Array.from(versions.children).forEach(child => child.remove())
                 const changeVersion = version => {
-                    document.getElementById('launch').innerText = `LAUNCH ${version.minecraft_version}`
-                    document.getElementById('launch').value = version.id
+                    launchButton.innerText = `LAUNCH ${version.minecraft_version}`
+                    launchButton.value = version.id
                     document.getElementById('versions-button').innerText = version.minecraft_version
                 }
                 versionList.forEach(version => {
